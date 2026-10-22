@@ -1,0 +1,35 @@
+name: Checks
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  verify:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.25.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm build
+      - run: pnpm test
+      - if: runner.os == 'Windows'
+        run: pnpm --dir desktop install --frozen-lockfile
+      - if: runner.os == 'Windows'
+        run: node tests/desktop-smoke.mjs
+      - if: runner.os == 'Windows'
+        run: pnpm desktop:package
+      - if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: StudyStep-Windows-x64
+          path: desktop/releases/**/StudyStep-win32-x64/
+          retention-days: 14

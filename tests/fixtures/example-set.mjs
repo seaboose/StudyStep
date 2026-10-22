@@ -1,0 +1,32 @@
+export const EXAMPLE_SET = {
+  format: "studystep",
+  version: 1,
+  title: "Networking basics",
+  topics: [
+    {
+      title: "What DNS does",
+      explanation:
+        "DNS translates domain names into IP addresses. Name resolution is separate from encrypting a connection.",
+      keyPoints: [
+        "DNS resolves names to IP addresses.",
+        "Name resolution does not itself encrypt traffic.",
+      ],
+      recallPrompt: "What does DNS translate?",
+      recallAnswer: "Domain names into IP addresses.",
+      questions: [
+        {
+          prompt: "What is the main job of DNS?",
+          options: [
+            "Translate domain names into IP addresses",
+            "Encrypt every connection",
+            "Store all web pages",
+          ],
+          answer: 1,
+          explanation:
+            "DNS provides name resolution. Encryption and storing web content are separate functions.",
+          hint: "Think about how a device finds a named destination.",
+        },
+      ],
+    },
+  ],
+};
