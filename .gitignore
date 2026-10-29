@@ -1,0 +1,13 @@
+node_modules/
+.runtime/
+.local-data/
+.local-dist/
+desktop/staging/
+desktop/releases/
+desktop/latest-build.json
+Start StudyStep Desktop.cmd
+.env*
+*.log
+*.tsbuildinfo
+.pnpm-store/
+artifacts/
