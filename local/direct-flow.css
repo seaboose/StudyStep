@@ -1,0 +1,305 @@
+/* Functional headings and compact introductions for the local desktop UI. */
+.desktop-app .card-review-dialog {
+  width: 1100px;
+  max-width: 96vw;
+}
+.desktop-app .review-summary p {
+  margin: 6px 0 12px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.desktop-app .review-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 24px;
+  margin-top: 20px;
+}
+.desktop-app .review-card,
+.desktop-app .review-evidence {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.desktop-app .review-card h3,
+.desktop-app .review-evidence h3 {
+  font:
+    600 20px/1.4 Arial,
+    sans-serif;
+  overflow-wrap: anywhere;
+  margin: 0 0 14px;
+}
+.desktop-app .review-prompt,
+.desktop-app .review-answer p {
+  font-size: 18px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.desktop-app .review-answer {
+  margin: 18px 0;
+  padding: 14px;
+  background: #eef4ed;
+  border-radius: 6px;
+}
+.desktop-app .review-position,
+.desktop-app .review-source-name {
+  font-size: 14px;
+  line-height: 1.5;
+}
+.desktop-app .review-evidence blockquote {
+  margin: 12px 0;
+  padding-left: 14px;
+  border-left: 3px solid var(--green);
+  font-size: 16px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.desktop-app .source-context {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.6;
+}
+.desktop-app .review-actions,
+.desktop-app .review-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+.desktop-app .review-choices {
+  margin-top: 18px;
+}
+.desktop-app .review-choices li {
+  margin: 10px 0;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.desktop-app .review-coverage {
+  margin-top: 12px;
+}
+.desktop-app .review-coverage li {
+  margin: 8px 0;
+}
+@media (max-width: 760px) {
+  .desktop-app .review-pair {
+    grid-template-columns: 1fr;
+  }
+  .desktop-app .card-review-dialog {
+    padding: 16px;
+  }
+}
+.desktop-app .page-intro {
+  min-height: 0;
+  margin-bottom: 20px;
+}
+.desktop-app .page-intro h1,
+.desktop-app .content-heading h1,
+.desktop-app .focus-intro h1 {
+  font:
+    600 28px/1.25 Arial,
+    Helvetica,
+    sans-serif;
+  letter-spacing: -0.4px;
+  margin: 0 0 8px;
+}
+.desktop-app .page-intro p,
+.desktop-app .focus-intro p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+.desktop-app .content-heading {
+  margin-bottom: 22px;
+}
+.desktop-app .content-heading > div > .eyebrow {
+  display: none;
+}
+.desktop-app .focus-intro {
+  margin-bottom: 24px;
+}
+.desktop-app .focus-main {
+  padding-top: 28px;
+}
+.desktop-app .upload-zone {
+  min-height: 230px;
+  padding: 22px;
+}
+.desktop-app .upload-icon {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 10px;
+}
+.desktop-app .next-action h2,
+.desktop-app .section-title,
+.desktop-app .weekly-panel h2,
+.desktop-app .session-journal h2,
+.desktop-app .empty-garden h2 {
+  font:
+    600 22px/1.35 Arial,
+    Helvetica,
+    sans-serif;
+}
+.desktop-app .effort-card h2 {
+  font-size: 15px;
+  margin-bottom: 16px;
+}
+.desktop-app .next-step h2 {
+  font-size: 18px;
+}
+.desktop-app .draft-help {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 10px 0 18px;
+}
+.desktop-app {
+  font-size: 16px;
+}
+.desktop-app .small,
+.desktop-app small,
+.desktop-app .generation-note,
+.desktop-app .storage-note,
+.desktop-app .source-info small,
+.desktop-app .save-status,
+.desktop-app .source-role,
+.desktop-app .upload-zone small,
+.desktop-app .generation-note,
+.desktop-app .local-field > span {
+  font-size: 13px;
+  line-height: 1.6;
+}
+.desktop-app .primary,
+.desktop-app .secondary,
+.desktop-app .nav-item,
+.desktop-app .desktop-header nav button {
+  font-size: 14px;
+  min-height: 44px;
+}
+.desktop-app .icon-button {
+  min-width: 44px;
+  min-height: 44px;
+}
+.desktop-app .text-button,
+.desktop-app summary {
+  min-height: 32px;
+}
+.desktop-app .explanation,
+.desktop-app .recall-answer p,
+.desktop-app .option-explanation p {
+  font-size: 16px;
+  line-height: 1.65;
+}
+.desktop-app select {
+  font: inherit;
+  min-height: 44px;
+  max-width: 100%;
+}
+.desktop-app select:focus-visible {
+  outline: 3px solid #945d00;
+  outline-offset: 3px;
+}
+.desktop-app .section-picker {
+  margin: 22px 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+}
+.desktop-app .section-picker > p {
+  margin: 12px 0;
+  font-size: 14px;
+}
+.desktop-app .section-picker fieldset {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--line);
+  margin-top: 16px;
+}
+.desktop-app .section-picker legend {
+  overflow-wrap: anywhere;
+  font-size: 15px;
+  font-weight: 600;
+}
+.desktop-app .section-choice {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+.desktop-app .section-choice label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  min-height: 44px;
+  font-size: 14px;
+}
+.desktop-app .section-choice input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--green);
+}
+.desktop-app .section-choice span {
+  color: var(--muted);
+  font-size: 13px;
+}
+.desktop-app .section-choice details {
+  margin-left: 30px;
+  font-size: 14px;
+}
+.desktop-app .section-choice p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  padding: 8px 0;
+}
+.desktop-app .draft-status {
+  font-size: 14px;
+  margin: 10px 0;
+}
+.desktop-app .editor-footer {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.desktop-app .editor-layout,
+.desktop-app .editor-content {
+  min-width: 0;
+}
+.desktop-app .content-heading h1,
+.desktop-app .study-card h2,
+.desktop-app .question-card h2,
+.desktop-app .recall-card h2 {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 760px) {
+  .desktop-app .page-intro h1,
+  .desktop-app .content-heading h1,
+  .desktop-app .focus-intro h1 {
+    font-size: 25px;
+  }
+  .desktop-app .editor-layout {
+    display: block;
+  }
+  .desktop-app .editor-topics {
+    margin-bottom: 18px;
+  }
+  .desktop-app .local-dialog {
+    max-width: 96vw;
+    padding: 18px;
+  }
+  .desktop-app .desktop-header nav {
+    flex-wrap: wrap;
+  }
+  .desktop-app .topbar {
+    height: auto;
+    min-height: 70px;
+    flex-wrap: wrap;
+    padding: 12px 18px;
+  }
+  .desktop-app .main {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+  .desktop-app .recall-ratings {
+    flex-direction: column;
+  }
+}
