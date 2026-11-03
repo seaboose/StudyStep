@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import {
   ArrowRight,
   ArrowLeft,
@@ -107,6 +107,7 @@ function Modal({
 export default function StudyApp({ local = false }: { local?: boolean }) {
   const [data, setData] = useState<Workspace>(emptyWorkspace),
     [tab, setTab] = useState<Tab>("materials");
+  useLayoutEffect(() => { window.scrollTo(0, 0); }, [tab]);
   const [loaded, setLoaded] = useState(false),
     [loadFailed, setLoadFailed] = useState(false),
     [aiReady, setAiReady] = useState(false),
@@ -643,7 +644,7 @@ export default function StudyApp({ local = false }: { local?: boolean }) {
           </span>
           StudyStep<span className="beta">{local ? "LOCAL" : "BETA"}</span>
         </a>
-        <div className="sidebar-label">WORKSPACE</div>
+        <div className="sidebar-label">YOUR STUDY SPACE</div>
         <button className="project" onClick={() => setTab("materials")}>
           <BookOpen size={22} />
           <span>
@@ -673,7 +674,7 @@ export default function StudyApp({ local = false }: { local?: boolean }) {
                     },
                     {
                       id: "trail" as const,
-                      label: "Recall Trail",
+                      label: "Recall practice",
                       icon: Sparkles,
                     },
                   ]
@@ -688,7 +689,6 @@ export default function StudyApp({ local = false }: { local?: boolean }) {
             >
               <n.icon size={19} />
               {n.label}
-              <ChevronRight size={14} />
             </button>
           ))}
         </nav>
@@ -718,7 +718,7 @@ export default function StudyApp({ local = false }: { local?: boolean }) {
                   : tab === "cards"
                     ? "Flashcards"
                     : tab === "trail"
-                      ? "Recall Trail"
+                      ? "Recall practice"
                       : "Practice"}
             </strong>
           </div>
@@ -833,10 +833,10 @@ export default function StudyApp({ local = false }: { local?: boolean }) {
             <>
               <section className="page-intro">
                 <div>
-                  <h1>Create a study set</h1>
+                  <span className="eyebrow">YOUR INTERESTS · YOUR PACE</span>
+                  <h1>What would you like to learn?</h1>
                   <p>
-                    Add a file or search a topic, then generate and review your
-                    cards.
+                    Explore a topic or bring your own material. Build a study set, practice what matters to you, and return to what needs work.
                   </p>
                 </div>
               </section>

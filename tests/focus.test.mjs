@@ -102,7 +102,7 @@ test("species unlock charges once and prevents negative balances", () => {
         { type: "species", species: "cherry" },
         100000,
       ),
-    /more leaves/,
+    /more focus credits/,
   );
   let s = { ...emptyFocus(), coins: 40 };
   s = applyFocusCommand(s, { type: "species", species: "cherry" }, 100000);

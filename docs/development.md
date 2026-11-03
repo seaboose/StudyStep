@@ -24,6 +24,14 @@ and request boundaries. `node tests/desktop-smoke.mjs` checks the Windows deskto
 workflow after a build. CI runs the logic checks on Windows and Linux, then tests
 and packages the Windows app. Model fixtures do not establish real-model accuracy.
 
+`node tests/theme-smoke.mjs` checks the 0.3.2 study flow, legacy focus data, and
+1440, 820, and 700 pixel layouts. Set `STUDYSTEP_TEST_HIDDEN=1` for offscreen
+desktop checks. Use `STUDYSTEP_TEST_EXE` to validate a packaged executable.
+
+The regular desktop stores data in `%APPDATA%/StudyStep/study-data`. Development
+editions use a separate identity and data folder. This source release reproduces
+the regular 0.3.2 product, including its focus collection and study journal.
+
 Keep source references visible and manual workflows available. Add a focused test
 for a changed behavior or failure path. Check keyboard access and narrow windows
 when changing the interface. Keep course documents, saved data, credentials, model

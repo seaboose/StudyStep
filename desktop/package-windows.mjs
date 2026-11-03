@@ -3,6 +3,8 @@ import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { packager } from "@electron/packager";
+import { buildLocal } from "../scripts/build-local.mjs";
+await buildLocal();
 const root = fileURLToPath(new URL("../", import.meta.url));
 const metadata = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
 const require = createRequire(path.join(root, "package.json"));
@@ -23,6 +25,7 @@ for (const name of [
   "scripts/review-store.mjs",
   "scripts/topic-search.mjs",
   "desktop/main.mjs",
+  "desktop/icon.ico",
   ".runtime/local-server",
 ]) {
   const target = path.join(staging, name);
@@ -39,7 +42,7 @@ await writeFile(
       name: "studystep",
       productName: "StudyStep",
       version: metadata.version,
-      description: "A calm local space for study and focus.",
+      description: "A personal learning workspace for your interests, study, and progress.",
       main: "desktop/main.mjs",
       type: "module",
       author: "Sebastian Marquez",
@@ -61,6 +64,7 @@ const output = await packager({
   dir: staging,
   out: path.join(root, "desktop", "releases", buildId),
   name: "StudyStep",
+  icon: path.join(root, "desktop", "icon.ico"),
   platform: "win32",
   arch: "x64",
   electronVersion,
@@ -73,7 +77,7 @@ const executable = path.join(output[0], "StudyStep.exe");
 // Keep this machine's existing study data and model separate from the portable bundle.
 await writeFile(
   path.join(root, "Start StudyStep Desktop.cmd"),
-  `@echo off\r\ncd /d "%~dp0"\r\nset "STUDYSTEP_DATA_DIR=%~dp0.local-data"\r\nset "STUDYSTEP_OLLAMA_ROOT=%~dp0.runtime\\ollama"\r\nstart "" "%~dp0${path.relative(root, executable)}"\r\n`,
+  `@echo off\r\ncd /d "%~dp0"\r\nstart "" "%~dp0${path.relative(root, executable)}"\r\n`,
 );
 await writeFile(
   path.join(root, "desktop", "latest-build.json"),

@@ -13,12 +13,20 @@ import { spawn } from "node:child_process";
 import { createLocalServer } from "../scripts/local-server.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
+const hiddenTest = process.env.STUDYSTEP_TEST_HIDDEN === "1";
+if (hiddenTest && !app.isReady()) app.disableHardwareAcceleration();
 const option = (name) =>
   process.argv.find((v) => v.startsWith(name + "="))?.slice(name.length + 1);
+const development = app.isPackaged
+  ? app.getName() === "StudyStep Dev"
+  : process.env.STUDYSTEP_CHANNEL === "development";
+const appName = development ? "StudyStep Dev" : "StudyStep";
+app.setName(appName);
+app.setAppUserModelId(development ? "local.studystep.development" : "local.studystep.desktop");
 const dataDir = path.resolve(
   option("--study-data") ||
     process.env.STUDYSTEP_DATA_DIR ||
-    path.join(app.getPath("userData"), "study-data"),
+    path.join(app.getPath("appData"), appName, "study-data"),
 );
 const profileDir = path.join(dataDir, "desktop-profile");
 mkdirSync(profileDir, { recursive: true });
@@ -28,9 +36,7 @@ let window,
   server,
   runtime,
   quitting = false;
-app.setName("StudyStep");
-app.setAppUserModelId("local.studystep.desktop");
-if (!app.requestSingleInstanceLock()) {
+if (!globalThis[Symbol.for("studystep.instance-lock")] && !app.requestSingleInstanceLock()) {
   console.info("An existing StudyStep window owns this workspace.");
   app.quit();
 } else {
@@ -79,15 +85,22 @@ if (!app.requestSingleInstanceLock()) {
         minWidth: 700,
         minHeight: 600,
         show: false,
-        title: "StudyStep",
-        backgroundColor: "#f5f6ef",
+        title: appName,
+        icon: path.join(root, "desktop", development ? "icon-dev.ico" : "icon.ico"),
+        backgroundColor: "#080c12",
         webPreferences: {
           nodeIntegration: false,
           contextIsolation: true,
           sandbox: true,
           webSecurity: true,
           backgroundThrottling: false,
+          devTools: development,
+          offscreen: hiddenTest,
         },
+      });
+      window.on("page-title-updated", (event) => {
+        event.preventDefault();
+        window.setTitle(development ? "StudyStep — Development" : "StudyStep");
       });
       const openReference = (url) => {
         try {
@@ -164,8 +177,30 @@ if (!app.requestSingleInstanceLock()) {
               { role: "togglefullscreen" },
             ],
           },
+          ...(development ? [{
+            label: "Developer",
+            submenu: [
+              { label: "Toggle interface inspector", accelerator: "F12", click: () => window.webContents.toggleDevTools() },
+              { label: "Open source folder", click: () => void shell.openPath(root) },
+              { label: "About development mode", click: () => void dialog.showMessageBox(window, {
+                type: "info", message: "StudyStep development workspace",
+                detail: "F12 or Ctrl+Shift+I opens the inspector. Right-click an element to inspect it. Save lasting edits in the source folder, then close and reopen StudyStep Dev to rebuild. Dev study data is stored separately from StudyStep.",
+              }) },
+            ],
+          }] : []),
         ]),
       );
+      if (development) {
+        window.webContents.on("context-menu", (_event, params) => {
+          Menu.buildFromTemplate([{ label: "Inspect element", click: () => window.webContents.inspectElement(params.x, params.y) }]).popup({ window });
+        });
+        window.webContents.on("before-input-event", (event, input) => {
+          if (input.type === "keyDown" && (input.key === "F12" || (input.control && input.shift && input.key.toLowerCase() === "i"))) {
+            event.preventDefault();
+            window.webContents.toggleDevTools();
+          }
+        });
+      }
       powerMonitor.on(
         "suspend",
         () => void server.pauseFocus().catch(() => {}),
@@ -195,7 +230,7 @@ if (!app.requestSingleInstanceLock()) {
         app.quit();
       });
       await window.loadURL(server.url);
-      window.show();
+      if (!hiddenTest) window.show();
     } catch (e) {
       dialog.showErrorBox("StudyStep could not open", e.message);
       runtime?.kill();

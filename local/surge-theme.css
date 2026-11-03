@@ -1,0 +1,491 @@
+/* Shared visual language with Surge. Import after the existing feature styles. */
+:root,
+.desktop-app {
+  color-scheme: dark;
+  --bg: #080c12;
+  --panel: #101923;
+  --ink: #e1edf4;
+  --fg: #e1edf4;
+  --muted: #9bacbb;
+  --line: #26414c;
+  --cyan: #00e2ed;
+  --orange: #ff9a48;
+  --red: #ff5c8b;
+  --green: #00e2ed;
+  --cream: #080c12;
+  --paper: #080c12;
+  --pale: #142d34;
+  --control: #111e28;
+  --header-height: 76px;
+  font-family: "Segoe UI", sans-serif;
+  font-size: 14px;
+  background: var(--bg);
+  color: var(--ink);
+}
+body { background: #080c12; color: #e1edf4; }
+.desktop-app { min-height: 100vh; line-height: 1.55; }
+.desktop-app [hidden] { display: none !important; }
+.desktop-app :is(button, input, textarea, select) { font-family: "Segoe UI", sans-serif; }
+.desktop-app.desktop-app :is(h1, h2, h3, .section-title) {
+  font-family: "Segoe UI", sans-serif;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.25px;
+}
+.desktop-app.desktop-app :is(.page-intro, .content-heading, .focus-intro) h1 {
+  font-size: 28px;
+  line-height: 1.25;
+  margin: 0 0 8px;
+}
+.desktop-app.desktop-app :is(.study-card, .recall-card, .question-card) h2 {
+  font-size: 24px;
+  line-height: 1.45;
+}
+.desktop-app :is(code, pre, .timer-readout, .big-number, .effort-numbers > strong) {
+  font-family: Consolas, "Cascadia Code", monospace;
+  font-variant-numeric: tabular-nums;
+}
+.desktop-app :is(.session-task, .quoted-evidence p, .small-steps p) {
+  font-family: "Segoe UI", sans-serif;
+}
+.desktop-app :is(button, summary) { min-height: 44px; }
+.desktop-app button {
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--control);
+  color: var(--ink);
+  line-height: 1.4;
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+.desktop-app button:hover:enabled {
+  border-color: var(--cyan);
+  background: #12313b;
+}
+.desktop-app button:active:enabled { background: #20374b; }
+.desktop-app button:disabled { opacity: .48; cursor: default; }
+.desktop-app :is(button, a, input, textarea, select, summary):focus-visible,
+.desktop-app .answer-option:has(input:focus-visible) {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+.desktop-app :is(.primary, .focus-primary) {
+  background: #073740;
+  border-color: #00a8b4;
+  color: #b8fcff;
+  min-height: 44px;
+  border-radius: 3px;
+  font-size: 14px;
+}
+.desktop-app :is(.primary, .focus-primary):hover:enabled { background: #104a54; }
+.desktop-app :is(.secondary, .focus-secondary, .quiet-button, .session-ribbon button) {
+  background: var(--control);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  min-height: 44px;
+  border-radius: 3px;
+}
+.desktop-app :is(.text-button, .focus-text, .source-name, .reveal-button) {
+  min-height: 44px;
+  background: transparent;
+  border-color: transparent;
+  color: #80e7ec;
+}
+.desktop-app :is(.icon-button, .question-dots button) { min-height: 44px; min-width: 44px; }
+.desktop-app :is(.icon-button.delete, .remove-topic) { color: #ff97b4; }
+.desktop-app :is(input, textarea, select),
+.desktop-app .modal input:not([type="checkbox"]),
+.desktop-app :is(.local-field, .topic-query-row) :is(input, textarea, select),
+.desktop-app .recall-card > textarea {
+  color: var(--ink);
+  background: #0b131c;
+  border: 1px solid #36525e;
+  border-radius: 3px;
+  font-size: 14px;
+}
+.desktop-app input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+.desktop-app select { min-height: 44px; }
+.desktop-app :is(input, textarea)::placeholder { color: #91a3b3; opacity: 1; }
+.desktop-app :is(input[type="checkbox"], input[type="radio"], input[type="range"]) {
+  accent-color: var(--cyan);
+}
+.desktop-app input[type="range"] { border: 0; background: transparent; }
+.desktop-app :is(.local-field, .task-label) { color: var(--ink); }
+.desktop-app :is(.eyebrow, .focus-eyebrow) { color: #6cdae2; letter-spacing: 1.5px; }
+.desktop-app :is(.small, small, .local-status, .setup-details, .local-export span,
+  .topic-search p, .topic-result span, .recall-topic, .recall-start > p,
+  .trail-finish p, .recall-space .small, .review-method, .learning-entry span,
+  .local-toolbar p, .import-options > span, .page-footer, .big-number > span) {
+  color: var(--muted);
+}
+.desktop-app :is(.topic-search a, .review-method a) { color: #80e7ec; }
+
+/* Application navigation stays distinct from the study workflow. */
+.desktop-app .desktop-header {
+  min-height: var(--header-height);
+  height: var(--header-height);
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  padding: 0 24px;
+  gap: 24px;
+  background: #0b121b;
+  border-bottom: 1px solid var(--line);
+}
+.desktop-app .desktop-brand {
+  background: transparent;
+  border: 0;
+  color: var(--ink);
+  font-size: 21px;
+  letter-spacing: -.5px;
+  padding: 0;
+  gap: 12px;
+}
+.desktop-app .desktop-brand > span {
+  background: #0d2c37;
+  border: 1px solid #28616c;
+  border-radius: 4px;
+  color: var(--cyan);
+}
+.desktop-app .desktop-brand > .brand-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  width: auto;
+  height: auto;
+  background: transparent;
+  border: 0;
+  color: var(--ink);
+  text-align: left;
+}
+.desktop-app .brand-copy strong { font-size: 21px; font-weight: 600; line-height: 1.15; }
+.desktop-app .desktop-shell-bar { display: flex; align-items: center; gap: 12px; }
+.desktop-app .desktop-shell-bar small {
+  display: block;
+  max-width: none;
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: .8px;
+}
+.desktop-app .desktop-header nav { gap: 5px; margin: 0 auto; }
+.desktop-app .desktop-header nav button {
+  border: 1px solid transparent;
+  border-radius: 3px;
+  color: var(--muted);
+  background: transparent;
+  padding: 10px 13px;
+  font-size: 14px;
+}
+.desktop-app .desktop-header nav button[aria-current="page"] {
+  background: #0d2c37;
+  border-color: #00b6c2;
+  color: #b8fcff;
+  font-weight: 600;
+}
+.desktop-app .leaf-wallet {
+  border-left: 1px solid var(--line);
+  padding-left: 18px;
+  color: #a4eaf0;
+  font-variant-numeric: tabular-nums;
+}
+.desktop-app .leaf-wallet > span { color: var(--muted); font-size: 12px; }
+.desktop-app .retained-study .app-shell { min-height: calc(100vh - var(--header-height)); }
+.desktop-app .retained-study .sidebar {
+  position: fixed;
+  top: var(--header-height);
+  bottom: 0;
+  left: 0;
+  width: 224px;
+  height: calc(100vh - var(--header-height));
+  overflow-y: auto;
+  padding: 22px 14px 16px;
+  background: #05080d;
+  border-right: 1px solid #203944;
+  color: var(--ink);
+}
+.desktop-app .sidebar .brand { font-size: 18px; gap: 8px; }
+.desktop-app .brand-mark { color: #80e7ec; border-color: #28616c; border-radius: 3px; }
+.desktop-app .beta { color: #9bacbb; border-color: var(--line); border-radius: 2px; }
+.desktop-app .sidebar-label { margin: 24px 10px 10px; color: #91a6b5; font-size: 10px; }
+.desktop-app .project {
+  background: #101923;
+  border-color: var(--line);
+  color: var(--ink);
+  border-radius: 4px;
+  padding: 12px 10px;
+}
+.desktop-app .project small { font-size: 11px; color: var(--muted); }
+.desktop-app .sidebar nav { margin-top: 18px; gap: 6px; }
+.desktop-app .nav-item {
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--muted);
+  padding: 12px 10px;
+  gap: 10px;
+  min-height: 48px;
+}
+.desktop-app .nav-item.selected {
+  border-color: #00b6c2;
+  background: #0d2c37;
+  color: #b8fcff;
+}
+.desktop-app .nav-item > svg:last-child { margin-left: 0; opacity: 1; flex-shrink: 0; }
+.desktop-app .privacy { border-color: var(--line); color: var(--muted); font-size: 12px; }
+.desktop-app .sidebar-bottom { padding-top: 24px; }
+.desktop-app .workspace { margin-left: 224px; min-width: 0; }
+.desktop-app .is-focused .workspace { margin-left: 0; }
+.desktop-app .topbar {
+  height: auto;
+  min-height: 62px;
+  padding: 10px 24px;
+  gap: 14px;
+  background: #0c141d;
+  border-color: var(--line);
+  flex-wrap: wrap;
+}
+.desktop-app .top-actions { flex-wrap: wrap; gap: 12px; }
+.desktop-app .save-status { display: flex; }
+.desktop-app .breadcrumb { font-size: 13px; }
+.desktop-app .retained-study .main,
+.desktop-app .main { max-width: 1440px; padding: 26px 24px 0; }
+.desktop-app :is(.page-intro, .content-heading, .focus-intro) { margin-bottom: 22px; }
+.desktop-app .page-footer { margin-top: 30px; font-size: 12px; }
+.desktop-app .page-footer .text-button { font-size: 12px; }
+.desktop-app .skip-link { background: #073740; color: #b8fcff; border: 1px solid var(--cyan); }
+.desktop-app .session-ribbon {
+  position: relative;
+  z-index: 20;
+  background: #10252d;
+  border-color: #28616c;
+  min-height: 64px;
+  padding: 10px 24px;
+  color: #b8fcff;
+}
+.desktop-app:has(.session-ribbon) .retained-study .sidebar {
+  top: calc(var(--header-height) + 64px);
+  height: calc(100vh - var(--header-height) - 64px);
+}
+.desktop-app :is(.live-dot, .local-badge > span) { background: var(--cyan); }
+
+.desktop-app .materials-layout { grid-template-columns: minmax(0, 1fr) 280px; gap: 20px; }
+.desktop-app .learning-entry { gap: 12px; margin-bottom: 20px; }
+.desktop-app .learning-entry > button { padding: 18px; }
+
+/* Feature surfaces share a consistent dark panel hierarchy. */
+.desktop-app :is(.upload-zone, .source-empty, .source-list, .next-step,
+  .study-card, .question-card, .empty-learning, .practice-summary,
+  .topic-search, .topic-result, .learning-entry > button, .recall-start,
+  .recall-card, .section-picker, .review-card, .review-evidence,
+  .plant-card, .next-action, .effort-card, .garden-panel, .weekly-panel,
+  .session-journal, .species-card, .local-toolbar, .local-callout, .import-preview) {
+  background: var(--panel);
+  color: var(--ink);
+  border-color: var(--line);
+  border-radius: 5px;
+  box-shadow: none;
+}
+.desktop-app :is(.study-card, .question-card, .recall-card, .topic-search,
+  .next-step, .practice-summary, .plant-card, .next-action, .effort-card,
+  .garden-panel, .weekly-panel, .session-journal, .species-card) { padding: 22px; }
+.desktop-app .upload-zone { border-style: dashed; border-color: #476674; }
+.desktop-app :is(.upload-zone.dragging, .learning-entry .selected,
+  .topic-nav button.current, .editor-topics button.selected,
+  .quick-durations button[aria-pressed="true"], .quiet-button.toggled) {
+  background: #0d2c37;
+  color: #b8fcff;
+  border-color: #00b6c2;
+  box-shadow: none;
+}
+.desktop-app :is(.upload-icon, .file-icon, .count, .pill, .practice-count,
+  .journal-icon, .recall-deck-info, .next-step li > span) {
+  color: #a4eaf0;
+  background: #142d34;
+  border-color: #36525e;
+  border-radius: 3px;
+}
+.desktop-app .file-icon.pdf { color: #ffd29b; background: #30251c; border-color: #745236; }
+.desktop-app .source-row { padding: 14px; }
+.desktop-app :is(.topic-preview, .study-utilities, .review-method,
+  .editor-option, .editor-footer, .section-choice) { border-color: var(--line); }
+.desktop-app .study-utilities > summary { color: var(--muted); font-size: 13px; }
+.desktop-app :is(.topic-excerpt, .review-evidence blockquote) { border-left-color: #36a9b5; }
+.desktop-app :is(.key-points, .quoted-evidence, .recall-answer,
+  .review-answer, .recall p.reference-answer) {
+  background: #0c222b;
+  color: var(--ink);
+  border-radius: 4px;
+}
+.desktop-app .recall-answer > p:not(.small) { color: var(--ink); }
+.desktop-app :is(.topic-nav button, .editor-topics button, .quick-durations button,
+  .question-dots button) { background: #111e28; color: var(--ink); border-color: var(--line); border-radius: 3px; }
+.desktop-app :is(.topic-nav button.current, .editor-topics button.selected,
+  .quick-durations button[aria-pressed="true"]) { background: #0d2c37; border-color: #00b6c2; color: #b8fcff; }
+.desktop-app .citations button { color: #80e7ec; background: #10252d; border-color: #36525e; border-radius: 3px; }
+.desktop-app .paper { border-color: #36525e; }
+.desktop-app :is(.paper.front, .paper.back) { background: #152630; }
+.desktop-app .paper.front > span { background: #0c222b; }
+.desktop-app .paper i { background: #36525e; }
+.desktop-app .paper-check { background: #0b4650; color: #b8fcff; }
+.desktop-app .graphic-dot { background: var(--orange); }
+.desktop-app .editor-question { background: #0c141d; border-color: var(--line); border-radius: 4px; }
+.desktop-app .editor-footer { background: var(--panel); }
+.desktop-app .editor-option { border-left-color: #36525e; }
+
+/* Feedback is encoded with text/icons in addition to color. */
+.desktop-app :is(.alert.error, .local-error, .focus-error, .answer-option.incorrect) {
+  color: #ffb2c7;
+  background: #301720;
+  border-color: #8b3c54;
+  border-radius: 4px;
+}
+.desktop-app :is(.alert.notice, .generation-progress, .answer-option.correct) {
+  color: #b8eee7;
+  background: #102d2b;
+  border-color: #32796e;
+  border-radius: 4px;
+}
+.desktop-app :is(.gaps, .hint, .extraction-warning, .finish-panel) {
+  color: #ffdc9d;
+  background: #30251b;
+  border: 1px solid #80603c;
+  border-radius: 4px;
+}
+.desktop-app .answer-option { background: #0c141d; border-color: #36525e; border-radius: 4px; }
+.desktop-app .answer-option.selected { background: #0d2c37; border-color: #00b6c2; }
+.desktop-app .answer-option.correct { background: #102d2b; border-color: #32796e; color: #b8eee7; }
+.desktop-app .answer-option.incorrect { background: #301720; border-color: #8b3c54; color: #ffb2c7; }
+.desktop-app .answer-option.incorrect > svg { color: #ff97b4; }
+.desktop-app .option-letter { border-color: #36525e; color: var(--ink); }
+.desktop-app .question-dots button.attempted { background: #0d4047; border-color: #359ca5; color: #b8fcff; }
+.desktop-app .focus-error button { background: #40212c; border-color: #8b3c54; color: #ffcedb; }
+.desktop-app .trail-path > span {
+  background: #0c141d;
+  color: var(--muted);
+  border: 1px dashed #476674;
+  border-radius: 4px;
+  transform: none;
+}
+.desktop-app .trail-path > span.built { background: #0d4047; color: #b8fcff; border: 1px solid #359ca5; }
+.desktop-app :is(.trail-path > svg, .trail-finish svg, .break-card > svg) { color: #80e7ec; }
+.desktop-app progress { color: var(--cyan); background: #1b2c38; accent-color: var(--cyan); }
+.desktop-app progress::-webkit-progress-bar { background: #1b2c38; }
+.desktop-app progress::-webkit-progress-value { background: #37b8c3; }
+
+/* Drafts, provenance, and editing keep the same treatment in native dialogs. */
+.desktop-app .modal {
+  background: #101923;
+  color: var(--ink);
+  border: 1px solid #476674;
+  border-radius: 5px;
+  padding: 24px;
+  box-shadow: 0 18px 80px #0008;
+}
+.desktop-app .modal::backdrop { background: #02060bd9; }
+.desktop-app .modal-heading { border-bottom: 1px solid var(--line); padding-bottom: 14px; margin-bottom: 18px; }
+.desktop-app .modal-heading h2 { font-size: 23px; }
+.desktop-app .review-card h3,
+.desktop-app .review-evidence h3 { font-family: "Segoe UI", sans-serif; }
+.desktop-app .modal :is(.local-field textarea, .local-field input, .local-field select) { background: #0b131c; }
+.desktop-app .modal-actions { flex-wrap: wrap; }
+
+/* Focus patterns record effort while the study workspace stays subject-neutral. */
+.desktop-app .focus-main { max-width: 1240px; padding: 28px 24px 20px; }
+.desktop-app .today-grid { grid-template-columns: minmax(0, 1.4fr) minmax(270px, 1fr); gap: 20px; }
+.desktop-app .plant-meta { color: var(--muted); font-size: 11px; letter-spacing: 1px; }
+.desktop-app .scene-halo { background: none; }
+.desktop-app .tree-scene { height: 238px; margin-top: 14px; }
+.desktop-app .learning-pattern { max-width: 100%; width: 230px; height: 220px; }
+.desktop-app .learning-pattern.small { width: 130px; height: 125px; }
+.desktop-app .growing .garden-tree { animation: none; }
+.desktop-app .timer-readout { font-size: 52px; letter-spacing: 2px; color: #b8fcff; }
+.desktop-app .session-task { font-size: 16px; }
+.desktop-app .task-input { background: #0b131c; }
+.desktop-app .effort-numbers > strong { font-size: 32px; color: #b8fcff; }
+.desktop-app .effort-numbers small { font-family: "Segoe UI", sans-serif; }
+.desktop-app :is(.garden-panel, .species-card) { background-image: none; }
+.desktop-app .species-card h3 { font-family: "Segoe UI", sans-serif; font-size: 18px; }
+.desktop-app .bar-track { background: #152430; border-radius: 3px; }
+.desktop-app .bar-track span { background: #36a9b5; border-radius: 2px; }
+.desktop-app .week-bars strong { font-family: Consolas, monospace; color: #b8fcff; }
+.desktop-app .forest-plot { background: #0b131c; padding: 12px; border: 1px solid var(--line); border-radius: 4px; }
+.desktop-app .forest-plot strong { color: var(--ink); }
+.desktop-app .focus-footer { font-size: 12px; }
+.desktop-app .next-action .focus-secondary { background: var(--control); }
+.desktop-app .session-journal article > strong { color: #b8fcff; }
+
+@media (max-width: 1180px) {
+  .desktop-app .materials-layout,
+  .desktop-app .practice-layout { grid-template-columns: minmax(0, 1fr); }
+  .desktop-app .right-rail { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; }
+  .desktop-app .right-rail .tip { margin-top: 0; padding: 16px 0; }
+}
+@media (max-width: 1000px) {
+  .desktop-app .desktop-header { height: auto; padding: 12px 18px; flex-wrap: wrap; gap: 10px 16px; }
+  .desktop-app .desktop-header nav { order: 3; width: 100%; margin: 0; flex-wrap: wrap; justify-content: flex-start; gap: 6px; }
+  .desktop-app .desktop-header nav button { padding: 9px 12px; }
+  .desktop-app .leaf-wallet { margin-left: auto; }
+  .desktop-app .desktop-shell-bar small { display: block; }
+  .desktop-app .retained-study .app-shell { display: block; min-height: 0; }
+  .desktop-app .retained-study .sidebar,
+  .desktop-app:has(.session-ribbon) .retained-study .sidebar {
+    position: static;
+    display: block;
+    width: 100%;
+    height: auto;
+    padding: 12px 18px;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    overflow: visible;
+  }
+  .desktop-app .sidebar > :is(.brand, .sidebar-label, .project, .sidebar-bottom) { display: none; }
+  .desktop-app .sidebar nav { display: flex; flex-direction: row; flex-wrap: wrap; gap: 6px; margin: 0; }
+  .desktop-app .nav-item { width: auto; min-width: 0; min-height: 44px; flex: 1 0 auto; padding: 10px 12px; }
+  .desktop-app .workspace { margin-left: 0; }
+  .desktop-app .is-focused .sidebar { display: block; }
+  .desktop-app .top-actions .quiet-button { display: none; }
+  .desktop-app .topbar { min-height: 60px; padding: 10px 18px; }
+  .desktop-app .retained-study .main,
+  .desktop-app .main,
+  .desktop-app .focus-main { padding: 24px 18px 0; }
+  .desktop-app .today-grid { grid-template-columns: minmax(0, 1.3fr) minmax(240px, 1fr); }
+  .desktop-app .session-ribbon { padding: 10px 18px; flex-wrap: wrap; gap: 8px 12px; }
+  .desktop-app .learning-layout { grid-template-columns: 170px minmax(0, 1fr); gap: 16px; }
+}
+@media (max-width: 760px) {
+  .desktop-app .desktop-header { position: static; }
+  .desktop-app .desktop-brand { font-size: 20px; }
+  .desktop-app .desktop-header nav button { flex: 1 0 auto; justify-content: center; }
+  .desktop-app .leaf-wallet { padding-left: 12px; }
+  .desktop-app .leaf-wallet > span { display: none; }
+  .desktop-app .right-rail,
+  .desktop-app .today-grid,
+  .desktop-app .learning-layout,
+  .desktop-app .review-pair { grid-template-columns: minmax(0, 1fr); }
+  .desktop-app .topic-nav { max-height: 230px; padding-top: 0; }
+  .desktop-app .topic-nav button { padding: 11px; }
+  .desktop-app .ai-footnote { margin-left: 0; }
+  .desktop-app :is(.study-card, .question-card, .recall-card, .topic-search,
+    .next-step, .practice-summary, .plant-card, .next-action, .effort-card,
+    .garden-panel, .weekly-panel, .session-journal, .species-card) { padding: 18px; }
+  .desktop-app :is(.content-heading, .focus-intro, .page-footer) { align-items: flex-start; flex-wrap: wrap; gap: 12px; }
+  .desktop-app :is(.question-actions, .card-footer, .question-navigation, .local-actions) { flex-wrap: wrap; }
+  .desktop-app .modal { max-width: 96vw; padding: 18px; }
+  .desktop-app .species-grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 480px) {
+  .desktop-app .desktop-shell-bar small { display: none; }
+  .desktop-app .learning-entry,
+  .desktop-app .today-aside { grid-template-columns: minmax(0, 1fr); }
+  .desktop-app .forest-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .desktop-app .session-journal article { flex-wrap: wrap; }
+}
+@media (forced-colors: active) {
+  .desktop-app :is(.nav-item.selected, .learning-entry .selected) {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+  .desktop-app :focus-visible { outline-color: Highlight; }
+}

@@ -1,26 +1,28 @@
 import { z } from "zod";
 
+// Keep the original persisted IDs so existing focus history and unlocks survive
+// visual updates. Names and colors are presentation metadata.
 export const SPECIES = [
   {
     id: "oak",
-    name: "Quiet oak",
+    name: "Spark",
     cost: 0,
-    color: "#52775a",
-    description: "A familiar place to begin.",
+    color: "#00e2ed",
+    description: "A small spark to mark time spent following your curiosity.",
   },
   {
     id: "cherry",
-    name: "Cherry blossom",
+    name: "Orbit",
     cost: 30,
-    color: "#cc8e9f",
-    description: "A little color for your next chapter.",
+    color: "#ff9a48",
+    description: "An orbit for the ideas you keep coming back to.",
   },
   {
     id: "pine",
-    name: "Mountain pine",
+    name: "Constellation",
     cost: 60,
-    color: "#426f6e",
-    description: "Steady growth, at your pace.",
+    color: "#b2a0ff",
+    description: "A constellation to brighten your growing collection.",
   },
 ] as const;
 const species = z.enum(["oak", "cherry", "pine"]);
@@ -197,13 +199,13 @@ export function applyFocusCommand(
     return { ...current, reducedMotion: command.value };
   if (command.type === "species") {
     if (current.active)
-      throw new Error("Choose your next tree after this session.");
+      throw new Error("Choose your next design after this session.");
     const tree = SPECIES.find((s) => s.id === command.species)!;
     if (current.unlocked.includes(tree.id))
       return { ...current, selected: tree.id };
     if (current.coins < tree.cost)
       throw new Error(
-        "Keep growing at your own pace. You need more leaves to unlock this tree.",
+        "Earn more focus credits to unlock this design.",
       );
     return {
       ...current,

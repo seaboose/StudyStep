@@ -1,4 +1,6 @@
 @import "tailwindcss";
+/* Keep the released utility set stable in clean source checkouts. */
+@source inline("truncate shadow");
 :root {
   --ink: #203a35;
   --muted: #66746e;

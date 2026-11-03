@@ -1,6 +1,8 @@
 import { SPECIES } from "../../lib/focus";
 
-export default function Tree({
+// Legacy species IDs preserve existing history and unlocks.
+// Patterns celebrate saved focus time without making a claim about mastery.
+export default function LearningPattern({
   species = "oak",
   progress = 1,
   small = false,
@@ -10,60 +12,102 @@ export default function Tree({
   small?: boolean;
 }) {
   const color =
-    SPECIES.find((s) => s.id === species)?.color || SPECIES[0].color;
-  const scale = 0.42 + Math.max(0, Math.min(1, progress)) * 0.58;
+    SPECIES.find((design) => design.id === species)?.color ||
+    SPECIES[0].color;
+  const completion = Math.max(0, Math.min(1, progress));
   return (
     <svg
-      className={small ? "garden-tree small" : "garden-tree"}
+      className={`garden-tree learning-pattern${small ? " small" : ""}`}
       viewBox="0 0 260 250"
       aria-hidden="true"
     >
-      <ellipse cx="130" cy="224" rx="72" ry="13" fill="#dce7d4" />
-      <g transform={`translate(130 222) scale(${scale}) translate(-130 -222)`}>
-        <path d="M125 220 127 110h8l3 110" fill="#8a7255" />
-        <path
-          d="m130 172-36-29m40 12 30-30"
-          stroke="#8a7255"
-          strokeWidth="7"
-          strokeLinecap="round"
-        />
-        {species === "pine" ? (
+      <g fill="none" stroke="#26414c" strokeWidth="1">
+        <path d="m30 77 26-34 49-18m96 24 29 38-8 52M47 166l13 24 39 10m79-3 32-20" />
+        <circle cx="130" cy="118" r="86" strokeDasharray="1 10" />
+      </g>
+      <g fill={color} opacity=".65">
+        <circle cx="30" cy="77" r="2" />
+        <circle cx="56" cy="43" r="3" />
+        <circle cx="105" cy="25" r="2" />
+        <circle cx="201" cy="49" r="2.5" />
+        <circle cx="230" cy="87" r="2" />
+        <circle cx="222" cy="139" r="3" />
+        <circle cx="47" cy="166" r="2" />
+        <circle cx="60" cy="190" r="2.5" />
+        <circle cx="99" cy="200" r="2" />
+        <circle cx="178" cy="197" r="2" />
+        <circle cx="210" cy="177" r="2.5" />
+      </g>
+      <circle cx="130" cy="118" r="70" fill="#0b141e" stroke="#26414c" />
+      <circle
+        cx="130"
+        cy="118"
+        r="70"
+        fill="none"
+        stroke={color}
+        strokeWidth="3"
+        pathLength="100"
+        strokeDasharray={`${completion * 100} 100`}
+        transform="rotate(-90 130 118)"
+      />
+      <g
+        fill="none"
+        stroke={color}
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        {species === "cherry" ? (
           <>
-            <path d="m130 32 62 100H68z" fill={color} />
-            <path d="m130 83 78 105H52z" fill={color} />
-            <path d="m130 32 10 100H68z" fill="#fff" opacity=".08" />
+            <ellipse cx="130" cy="118" rx="46" ry="21" transform="rotate(-30 130 118)" opacity=".65" />
+            <ellipse cx="130" cy="118" rx="46" ry="21" transform="rotate(55 130 118)" opacity=".35" />
+            <circle cx="130" cy="118" r="12" fill={color} fillOpacity=".12" />
+            <circle cx="166" cy="91" r="5" fill={color} />
+            <circle cx="110" cy="81" r="3" fill={color} />
+          </>
+        ) : species === "pine" ? (
+          <>
+            <path d="m94 137 20-51 35 20 20 43-41 12-34-24 55-31-21 55" opacity=".55" />
+            <circle cx="94" cy="137" r="5" fill={color} fillOpacity=".15" />
+            <circle cx="114" cy="86" r="4" fill={color} />
+            <circle cx="149" cy="106" r="6" fill={color} fillOpacity=".15" />
+            <circle cx="169" cy="149" r="4" fill={color} />
+            <circle cx="128" cy="161" r="4" fill={color} />
           </>
         ) : (
           <>
-            <circle cx="93" cy="115" r="45" fill={color} />
-            <circle cx="166" cy="115" r="44" fill={color} />
-            <circle cx="131" cy="77" r="53" fill={color} />
-            <ellipse cx="132" cy="126" rx="53" ry="39" fill={color} />
-            <ellipse
-              cx="113"
-              cy="67"
-              rx="25"
-              ry="20"
-              fill="#fff"
-              opacity=".12"
+            <path
+              d="m130 78 11 29 29 11-29 11-11 29-11-29-29-11 29-11z"
+              fill={color}
+              fillOpacity=".09"
             />
-            {species === "cherry" && (
-              <g fill="#f7dce5">
-                <circle cx="85" cy="102" r="6" />
-                <circle cx="143" cy="57" r="7" />
-                <circle cx="172" cy="122" r="6" />
-                <circle cx="120" cy="125" r="6" />
-              </g>
-            )}
+            <path d="m165 76 4 10 10 4-10 4-4 10-4-10-10-4 10-4z" strokeWidth="1.5" />
+            <circle cx="96" cy="155" r="3" fill={color} />
+            <circle cx="90" cy="87" r="2" fill={color} />
           </>
         )}
       </g>
-      <path
-        d="m65 224-3-11m6 11 5-7m112 7 2-10m-5 10-5-6"
-        stroke="#94ab7d"
-        strokeWidth="2.5"
-        strokeLinecap="round"
+      <rect
+        x="60"
+        y="211"
+        width="140"
+        height="22"
+        rx="4"
+        fill="#101923"
+        stroke="#26414c"
       />
+      {Array.from({ length: 10 }, (_, index) => (
+        <rect
+          key={index}
+          x={69 + index * 12.5}
+          y="218"
+          width="9"
+          height="8"
+          rx="1"
+          fill={index < Math.ceil(completion * 10) ? color : "#26414c"}
+          opacity={index < Math.ceil(completion * 10) ? 0.9 : 0.5}
+        />
+      ))}
     </svg>
   );
 }

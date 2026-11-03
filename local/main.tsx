@@ -4,6 +4,7 @@ import LocalApp from "./LocalApp";
 import "../app/study.css";
 import "./local.css";
 import "./direct-flow.css";
+import "./surge-theme.css";
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <LocalApp />

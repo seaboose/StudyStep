@@ -1,22 +1,22 @@
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import {
   ArrowRight,
   BookOpen,
   Check,
   Coffee,
   Download,
-  Leaf,
+  Zap,
   Pause,
   Play,
-  Sprout,
-  Sun,
-  Trees,
-  X,
+  Layers3,
+  Timer,
+  Sparkles,
+  History,
 } from "lucide-react";
 import StudyApp from "../app/study-app";
 import { SPECIES } from "../lib/focus";
 import { useFocus } from "./focus/useFocus";
-import Tree from "./focus/Tree";
+import LearningPattern from "./focus/Tree";
 import "./focus/focus.css";
 
 type Page = "today" | "study" | "garden" | "journal";
@@ -29,6 +29,7 @@ const dayKey = (time: number) => new Date(time).toLocaleDateString();
 
 export default function LocalApp() {
   const [page, setPage] = useState<Page>("study");
+  useLayoutEffect(() => { window.scrollTo(0, 0); }, [page]);
   const [duration, setDuration] = useState(25),
     [task, setTask] = useState("");
   const [confirmEnd, setConfirmEnd] = useState(false);
@@ -40,7 +41,7 @@ export default function LocalApp() {
     (h) => h.kind === "focus" && dayKey(h.endedAt) === dayKey(Date.now()),
   );
   const todayMinutes = minutes(today.reduce((n, h) => n + h.elapsedMs, 0));
-  const trees = history.filter(
+  const sessions = history.filter(
     (h) => h.kind === "focus" && h.elapsedMs >= 60000,
   );
   const last = history[history.length - 1];
@@ -50,9 +51,9 @@ export default function LocalApp() {
     : duration * 60000;
   const nav = [
     { id: "study", label: "Study", icon: BookOpen },
-    { id: "today", label: "Focus timer", icon: Sun },
-    { id: "garden", label: "Garden", icon: Trees },
-    { id: "journal", label: "Focus history", icon: Leaf },
+    { id: "today", label: "Focus timer", icon: Timer },
+    { id: "garden", label: "Focus collection", icon: Sparkles },
+    { id: "journal", label: "Study journal", icon: History },
   ] as const;
   function start(kind: "focus" | "break", value = duration) {
     setConfirmEnd(false);
@@ -97,17 +98,15 @@ export default function LocalApp() {
       >
         Skip to workspace
       </a>
-      <header className="desktop-header">
+      <header className="desktop-header desktop-shell-bar">
         <button className="desktop-brand" onClick={() => setPage("study")}>
           <span>
-            <Sprout size={24} />
+            <Layers3 size={24} />
           </span>
-          StudyStep
+          <span className="brand-copy"><strong>StudyStep</strong><small>A personal learning workspace</small></span>
         </button>
         <nav aria-label="App navigation">
-          {nav
-            .filter((n) => !active || n.id === "today" || n.id === "study")
-            .map((n) => (
+          {nav.map((n) => (
               <button
                 key={n.id}
                 aria-current={page === n.id ? "page" : undefined}
@@ -119,12 +118,12 @@ export default function LocalApp() {
             ))}
         </nav>
         <span
-          className="leaf-wallet"
-          aria-label={`${state?.coins || 0} leaves earned and available`}
+          className="leaf-wallet focus-wallet"
+          aria-label={`${state?.coins || 0} focus credits earned and available`}
         >
-          <Leaf size={17} />
+          <Zap size={17} />
           {state?.coins || 0}
-          <span>leaves</span>
+          <span>credits</span>
         </span>
       </header>
       {focus.error && (
@@ -133,7 +132,7 @@ export default function LocalApp() {
           <button onClick={() => void focus.reload()}>Try again</button>
         </div>
       )}
-      {page === "study" && active && (
+      {page !== "today" && active && (
         <aside className="session-ribbon" aria-label="Current focus session">
           <span className="live-dot" />
           <strong>
@@ -175,8 +174,8 @@ export default function LocalApp() {
                   </h1>
                   <p>
                     {active
-                      ? "You can pause whenever you need. Your materials are right here."
-                      : "Choose a duration and start. The timer is optional."}
+                      ? "Stay on your objective. Pause whenever you need; your work is saved locally."
+                      : "Make a little room for what you want to learn. Choose a duration and begin."}
                   </p>
                 </div>
                 <span className="local-badge">
@@ -185,8 +184,11 @@ export default function LocalApp() {
                 </span>
               </section>
               <div className="today-grid">
-                <section className="plant-card" aria-label="Focus session">
-                  <div className="plant-meta">
+                <section
+                  className="plant-card station-card"
+                  aria-label="Focus session"
+                >
+                  <div className="plant-meta station-meta">
                     <span>
                       {active
                         ? active.kind === "break"
@@ -199,14 +201,14 @@ export default function LocalApp() {
                     <span>
                       {SPECIES.find(
                         (s) => s.id === (active?.species || state?.selected),
-                      )?.name || "Quiet oak"}
+                      )?.name || "Spark"}
                     </span>
                   </div>
                   <div
-                    className={`tree-scene ${active?.status === "running" ? "growing" : ""}`}
+                    className={`tree-scene station-scene ${active?.status === "running" ? "growing" : ""}`}
                   >
                     <div className="scene-halo" />
-                    <Tree
+                    <LearningPattern
                       species={active?.species || state?.selected}
                       progress={
                         active
@@ -224,7 +226,7 @@ export default function LocalApp() {
                           : active.kind === "break"
                             ? "Break in progress."
                             : "Session in progress."
-                        : "Save a minute of focus to add a tree."}
+                        : "Each saved session adds a pattern to your collection."}
                     </span>
                   </div>
                   <div
@@ -357,14 +359,14 @@ export default function LocalApp() {
                         value={task}
                         maxLength={120}
                         onChange={(e) => setTask(e.target.value)}
-                        placeholder="Read two pages, or try one practice question…"
+                        placeholder="Explore an idea, read a chapter, or practice a question…"
                       />
                       <button
                         className="focus-primary plant-start"
                         disabled={disabled}
                         onClick={() => start("focus")}
                       >
-                        <Sprout size={20} />
+                        <Play size={20} />
                         Start timer
                         <ArrowRight size={18} />
                       </button>
@@ -398,11 +400,11 @@ export default function LocalApp() {
                         <small>minutes today</small>
                       </strong>
                       <strong>
-                        {trees.length}
+                        {sessions.length}
                         <small>
-                          {trees.length === 1
-                            ? "tree planted"
-                            : "trees planted"}
+                          {sessions.length === 1
+                            ? "session logged"
+                            : "sessions logged"}
                         </small>
                       </strong>
                     </div>
@@ -436,7 +438,7 @@ export default function LocalApp() {
                         </strong>
                         <p>
                           {minutes(last.elapsedMs)} minutes saved
-                          {last.coins ? ` · ${last.coins} leaves earned` : ""}.
+                          {last.coins ? ` · ${last.coins} credits earned` : ""}.
                         </p>
                       </div>
                     </section>
@@ -449,22 +451,23 @@ export default function LocalApp() {
             <>
               <section className="focus-intro">
                 <div>
-                  <h1>Garden</h1>
+                  <h1>Focus collection</h1>
                   <p>
-                    Trees represent saved focus sessions of at least one minute.
+                    A little reminder of the time you make for learning. Each
+                    pattern marks a saved focus session of at least one minute.
                   </p>
                 </div>
               </section>
-              <section className="garden-panel">
-                {trees.length ? (
-                  <div className="forest-grid">
-                    {trees.slice(-60).map((h) => (
+              <section className="garden-panel focus-collection-panel">
+                {sessions.length ? (
+                  <div className="forest-grid station-grid">
+                    {sessions.slice(-60).map((h) => (
                       <div
-                        className="forest-plot"
+                        className="forest-plot station-record"
                         key={h.id}
                         title={`${h.task || "Focus"} · ${minutes(h.elapsedMs)} minutes`}
                       >
-                        <Tree
+                        <LearningPattern
                           species={h.species}
                           progress={h.outcome === "completed" ? 1 : 0.35}
                           small
@@ -480,12 +483,12 @@ export default function LocalApp() {
                     ))}
                   </div>
                 ) : (
-                  <div className="empty-garden">
-                    <Tree progress={0.25} />
+                  <div className="empty-garden empty-collection">
+                    <LearningPattern progress={0.25} />
                     <h2>No focus sessions yet</h2>
                     <p>
-                      Save at least one minute of focus to plant your first
-                      sapling.
+                      Save at least one minute of focus to add your first
+                      pattern. Choose any subject that interests you.
                     </p>
                     <button
                       className="focus-primary"
@@ -496,24 +499,25 @@ export default function LocalApp() {
                     </button>
                   </div>
                 )}
-                {trees.length > 60 && (
+                {sessions.length > 60 && (
                   <p className="garden-limit">
-                    Showing your latest 60 trees. All sessions remain in Focus
-                    history.
+                    Showing your latest 60 patterns. All sessions remain in
+                    Study journal.
                   </p>
                 )}
               </section>
-              <h2 className="section-title">Choose a tree</h2>
-              <div className="species-grid">
+              <h2 className="section-title">Choose a design</h2>
+              {active && <p className="no-pressure">Finish the current session before changing designs.</p>}
+              <div className="species-grid station-options">
                 {SPECIES.map((s) => (
-                  <section className="species-card" key={s.id}>
-                    <Tree species={s.id} small />
+                  <section className="species-card station-option" key={s.id}>
+                    <LearningPattern species={s.id} small />
                     <h3>{s.name}</h3>
                     <p>{s.description}</p>
                     <button
                       className="focus-secondary"
                       disabled={
-                        disabled ||
+                        disabled || !!active ||
                         state?.selected === s.id ||
                         (!state?.unlocked.includes(s.id) &&
                           (state?.coins || 0) < s.cost)
@@ -525,15 +529,15 @@ export default function LocalApp() {
                       {state?.selected === s.id
                         ? "Selected"
                         : state?.unlocked.includes(s.id)
-                          ? "Choose this tree"
-                          : `Unlock · ${s.cost} leaves`}
+                          ? "Use this design"
+                          : `Unlock · ${s.cost} credits`}
                     </button>
                   </section>
                 ))}
               </div>
               <p className="no-pressure">
-                Leaves are earned locally, one per whole minute of focus. There
-                are no purchases.
+                Earn one focus credit per whole minute of study. Designs
+                celebrate time spent, not mastery. There are no purchases.
               </p>
             </>
           )}
@@ -541,7 +545,7 @@ export default function LocalApp() {
             <>
               <section className="focus-intro">
                 <div>
-                  <h1>Focus history</h1>
+                  <h1>Study journal</h1>
                   <p>
                     Saved focus sessions and breaks. Time spent does not measure
                     learning.
@@ -612,7 +616,7 @@ export default function LocalApp() {
                         {h.kind === "break" ? (
                           <Coffee size={20} />
                         ) : (
-                          <Sprout size={20} />
+                          <BookOpen size={20} />
                         )}
                       </span>
                       <div>
@@ -628,7 +632,7 @@ export default function LocalApp() {
                       </div>
                       <strong>
                         {minutes(h.elapsedMs)} min
-                        <small>{h.coins} leaves</small>
+                        <small>{h.coins} credits</small>
                       </strong>
                     </article>
                   ))}
@@ -640,14 +644,14 @@ export default function LocalApp() {
                 )}
               </section>
               <p className="no-pressure">
-                Focus backups contain your timer history and garden. Use Back up
-                in Study for your study materials.
+                Focus backups contain your session history and design unlocks. Use
+                Back up in Study for your study materials.
               </p>
             </>
           )}
           <footer className="focus-footer">
             <span>
-              <Sprout size={16} />
+              <Layers3 size={16} />
               StudyStep
             </span>
             <label>

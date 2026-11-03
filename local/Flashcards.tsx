@@ -4,7 +4,7 @@ import {
   BookOpen,
   Check,
   Flag,
-  Map,
+  Route,
   RotateCcw,
   Sparkles,
 } from "lucide-react";
@@ -133,14 +133,14 @@ export default function Flashcards({
     <section className={`recall-space ${trail ? "trail-mode" : ""}`}>
       <div className="content-heading">
         <div>
-          <h1>{trail ? "Recall Trail" : "Flashcards"}</h1>
+          <h1>{trail ? "Recall practice" : "Flashcards"}</h1>
           <p>
             {trail
-              ? "Review up to five cards to complete a path. Difficult cards return for a retry."
+              ? "Run a five-card knowledge check. Difficult cards return for a retry."
               : "Try an answer in your own words, compare it with the reference, and choose when to revisit it."}
           </p>
         </div>
-        {trail ? <Map size={38} /> : <BookOpen size={38} />}
+        {trail ? <Route size={38} /> : <BookOpen size={38} />}
       </div>
       {error && (
         <div className="alert error" role="alert">
@@ -171,7 +171,7 @@ export default function Flashcards({
             <strong>{snapshot.deck.title}</strong>
             <span>
               {snapshot.deck.cards.length} cards · {snapshot.due} due ·{" "}
-              {snapshot.state.trails} trails completed
+              {snapshot.state.trails} practice rounds completed
             </span>
           </div>
           {!playing && (
@@ -181,7 +181,7 @@ export default function Flashcards({
                   <Flag size={30} />
                   <h2>
                     {session.mode === "trail"
-                      ? "Trail complete"
+                      ? "Drill complete"
                       : "Round saved"}
                   </h2>
                   <p>
@@ -199,10 +199,10 @@ export default function Flashcards({
               )}
               {!session && (
                 <>
-                  <h2>{trail ? "Start a trail" : "Review cards"}</h2>
+                  <h2>{trail ? "Start recall practice" : "Review cards"}</h2>
                   <p>
                     {trail
-                      ? "Attempt each prompt before turning it over. Each reviewed card adds a stone; difficult cards return for one short retry."
+                      ? "Attempt each prompt before revealing the answer. Each reviewed card completes a checkpoint; difficult cards return for one short retry."
                       : "Review up to twenty due cards in a round. You can leave and continue later."}
                   </p>
                 </>
@@ -212,10 +212,10 @@ export default function Flashcards({
                 disabled={disabled}
                 onClick={() => start(snapshot.due === 0)}
               >
-                {trail ? <Map size={17} /> : <BookOpen size={17} />}
+                {trail ? <Route size={17} /> : <BookOpen size={17} />}
                 {snapshot.due
                   ? trail
-                    ? "Start trail"
+                    ? "Start practice"
                     : "Review due cards"
                   : "Practice ahead (optional)"}
               </button>
@@ -234,7 +234,7 @@ export default function Flashcards({
                 <div
                   className="trail-path"
                   role="img"
-                  aria-label={`${session.rated.length} of ${uniqueCount} stepping stones built`}
+                  aria-label={`${session.rated.length} of ${uniqueCount} practice checkpoints complete`}
                 >
                   {Array.from({ length: uniqueCount }, (_, i) => (
                     <span
@@ -318,7 +318,7 @@ export default function Flashcards({
                     <h3>How did recall feel?</h3>
                     <p className="small">
                       Compare your attempt with the answer. Choose honestly;
-                      every review builds the path.
+                      each response helps schedule your next review.
                     </p>
                     <div className="recall-ratings">
                       <button
@@ -388,9 +388,8 @@ export default function Flashcards({
               practical defaults, not a personally validated optimal schedule.
             </p>
             <p>
-              The trail rewards participation. It does not measure intelligence,
-              attention, or mastery. This game has not been clinically evaluated
-              for ADHD.
+              Drill completion records participation. Use source-backed answers
+              and repeated practice to assess what needs more attention.
             </p>
             <p>
               Research:{" "}
