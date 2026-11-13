@@ -1,0 +1,652 @@
+.desktop-app .agent-workspace {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 30px 24px 60px;
+  color: var(--ink);
+}
+.desktop-app .agent-intro {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 26px;
+}
+.desktop-app .agent-intro h1 {
+  margin: 5px 0 8px;
+  font-size: 30px;
+  line-height: 1.3;
+}
+.desktop-app .agent-intro p {
+  color: var(--muted);
+  margin: 0;
+  max-width: 700px;
+}
+.desktop-app .agent-edition {
+  color: var(--muted);
+  border: 1px solid var(--line);
+  font:
+    11px Consolas,
+    monospace;
+  padding: 6px 9px;
+  white-space: nowrap;
+}
+.desktop-app .agent-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 350px) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+.desktop-app .agent-sidebar,
+.desktop-app .agent-task-detail {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+}
+.desktop-app .agent-panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 22px;
+  min-width: 0;
+}
+.desktop-app .agent-panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.desktop-app .agent-panel-heading svg {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.desktop-app .agent-panel-heading h2,
+.desktop-app .agent-panel-heading h3 {
+  margin: 0;
+  font-size: 18px;
+}
+.desktop-app .agent-form {
+  display: grid;
+  gap: 17px;
+}
+.desktop-app .agent-workspace label {
+  display: grid;
+  gap: 7px;
+  color: var(--ink);
+  font-weight: 500;
+  font-size: 13px;
+}
+.desktop-app
+  .agent-workspace
+  :is(input:not([type="checkbox"]), textarea, select) {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--panel);
+  color: var(--ink);
+  padding: 11px 12px;
+  font: inherit;
+  line-height: 1.55;
+}
+.desktop-app .agent-workspace input::placeholder,
+.desktop-app .agent-workspace textarea::placeholder {
+  color: var(--muted);
+}
+.desktop-app .agent-workspace textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+.desktop-app .agent-workspace .agent-help {
+  margin: -7px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+.desktop-app .agent-workspace .agent-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 400;
+}
+.desktop-app .agent-checkbox input {
+  width: 17px;
+  height: 17px;
+  margin: 3px 0 0;
+  flex-shrink: 0;
+  accent-color: var(--accent);
+}
+.desktop-app .agent-submit {
+  width: 100%;
+  justify-content: center;
+}
+.desktop-app .agent-workspace button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 13px;
+  font-size: 13px;
+}
+.desktop-app .agent-model .agent-panel-heading {
+  justify-content: space-between;
+}
+.desktop-app .agent-model label {
+  margin-bottom: 12px;
+}
+.desktop-app .agent-model .agent-help {
+  margin-top: 0;
+}
+.desktop-app .agent-online,
+.desktop-app .agent-offline {
+  font-size: 11px;
+  color: var(--accent);
+  text-align: right;
+}
+.desktop-app .agent-offline {
+  color: var(--warm);
+}
+.desktop-app .agent-model .agent-text-button {
+  display: flex;
+  padding-left: 0;
+  padding-right: 0;
+  margin-top: 8px;
+  border-color: transparent;
+  color: var(--accent);
+  background: transparent;
+}
+.desktop-app .agent-results {
+  min-width: 0;
+}
+.desktop-app .agent-results-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 13px;
+  gap: 12px;
+}
+.desktop-app .agent-results-heading h2 {
+  font-size: 18px;
+  margin: 0;
+}
+.desktop-app .agent-results-heading > span {
+  color: var(--muted);
+  font-size: 12px;
+}
+.desktop-app .agent-empty {
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+.desktop-app .agent-empty > svg {
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+.desktop-app .agent-empty h3 {
+  font-size: 22px;
+  margin: 0 0 8px;
+}
+.desktop-app .agent-empty p {
+  margin: 0;
+  color: var(--muted);
+  max-width: 500px;
+}
+.desktop-app .agent-role-list {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.desktop-app .agent-task-list {
+  display: flex;
+  gap: 8px;
+  overflow: auto;
+  padding-bottom: 12px;
+  margin-bottom: 8px;
+  max-width: 100%;
+}
+.desktop-app .agent-task-list button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 170px;
+  max-width: 270px;
+  text-align: left;
+  padding: 12px;
+  flex-shrink: 0;
+}
+.desktop-app .agent-task-list strong {
+  max-width: 100%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.desktop-app .agent-task-list button[aria-current="page"] {
+  border-color: var(--accent);
+  background: var(--pale);
+}
+.desktop-app .agent-status {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 400;
+}
+.desktop-app .agent-status.is-ready,
+.desktop-app .agent-status.is-accepted {
+  color: var(--positive);
+}
+.desktop-app .agent-status.is-failed {
+  color: var(--negative);
+}
+.desktop-app .agent-task-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+.desktop-app .agent-task-heading h2 {
+  margin: 5px 0 10px;
+  font-size: 25px;
+  overflow-wrap: anywhere;
+}
+.desktop-app .agent-task-heading > svg {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.desktop-app .agent-goal {
+  margin: 0 0 16px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.desktop-app .agent-task-meta {
+  display: flex;
+  gap: 8px 14px;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 12px;
+}
+.desktop-app .agent-task-meta span + span {
+  border-left: 1px solid var(--line);
+  padding-left: 14px;
+}
+.desktop-app .agent-adaptation {
+  color: var(--accent);
+  padding: 12px;
+  background: var(--pale);
+  border-left: 2px solid var(--accent);
+  font-size: 13px;
+  margin: 16px 0 0;
+}
+.desktop-app .agent-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+.desktop-app .agent-actions:empty {
+  display: none;
+}
+.desktop-app .agent-workspace details > summary {
+  cursor: pointer;
+  display: list-item;
+  padding: 12px 0;
+  color: var(--accent);
+  font-size: 13px;
+}
+.desktop-app .agent-activity {
+  margin-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.desktop-app .agent-activity ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 290px;
+  overflow-y: auto;
+}
+.desktop-app .agent-activity li {
+  border-left: 2px solid var(--line);
+  padding: 0 0 16px 14px;
+  margin-left: 3px;
+}
+.desktop-app .agent-activity li:last-child {
+  border-left-color: var(--accent);
+}
+.desktop-app .agent-activity li > span {
+  color: var(--accent);
+  font-size: 12px;
+}
+.desktop-app .agent-activity p {
+  margin: 3px 0;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.desktop-app .agent-activity time {
+  color: var(--muted);
+  font:
+    11px Consolas,
+    monospace;
+}
+.desktop-app .agent-sources h3 {
+  font-size: 17px;
+  margin: 0 0 12px;
+}
+.desktop-app .agent-sources ul {
+  padding: 0;
+  list-style: none;
+  margin: 0;
+  display: grid;
+  gap: 16px;
+}
+.desktop-app .agent-sources a,
+.desktop-app .agent-evidence a {
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.desktop-app .agent-sources small {
+  color: var(--muted);
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+}
+.desktop-app .agent-sources p {
+  color: var(--muted);
+  font-size: 12px;
+  margin: 5px 0 0;
+}
+.desktop-app .agent-proposal-heading {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  align-items: center;
+}
+.desktop-app .agent-proposal-heading h3 {
+  margin: 5px 0;
+  font-size: 23px;
+}
+.desktop-app .agent-proposal-heading > span,
+.desktop-app .agent-proposal > p {
+  font-size: 12px;
+  color: var(--muted);
+}
+.desktop-app .agent-preview-cards {
+  display: grid;
+  gap: 16px;
+  margin: 20px 0;
+}
+.desktop-app .agent-preview-card {
+  padding: 18px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+}
+.desktop-app .agent-card-label {
+  font:
+    11px Consolas,
+    monospace;
+  color: var(--accent);
+}
+.desktop-app .agent-preview-card h4 {
+  font-size: 18px;
+  margin: 10px 0;
+  font-weight: 600;
+}
+.desktop-app .agent-preview-card p {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 8px 0;
+}
+.desktop-app .agent-preview-card .agent-preview-answer {
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: 500;
+}
+.desktop-app .agent-evidence {
+  margin-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.desktop-app .agent-evidence summary > span {
+  font:
+    11px Consolas,
+    monospace;
+  padding-left: 8px;
+  color: var(--muted);
+}
+.desktop-app .agent-evidence figure {
+  margin: 8px 0 18px;
+}
+.desktop-app .agent-evidence blockquote {
+  border-left: 2px solid var(--line);
+  padding: 5px 14px;
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: var(--ink);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.desktop-app .agent-evidence figcaption {
+  font-size: 11px;
+  color: var(--muted);
+}
+.desktop-app .agent-evidence figcaption a {
+  margin-left: 10px;
+}
+.desktop-app .agent-quiz-preview {
+  border-top: 1px solid var(--line);
+}
+.desktop-app .agent-quiz-preview article {
+  border-top: 1px solid var(--line);
+  padding: 15px 0;
+}
+.desktop-app .agent-quiz-preview h4 {
+  font-size: 16px;
+  margin: 0 0 14px;
+}
+.desktop-app .agent-quiz-preview ol {
+  padding-left: 24px;
+  margin: 0;
+}
+.desktop-app .agent-quiz-preview li {
+  padding: 8px 8px 10px;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+.desktop-app .agent-quiz-preview li small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 5px;
+}
+.desktop-app .agent-correct-option {
+  background: var(--pale);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+}
+.desktop-app .agent-correct-option strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: 10px;
+  font-size: 11px;
+  color: var(--positive);
+}
+.desktop-app .agent-gaps {
+  margin: 18px 0;
+  padding: 14px;
+  background: var(--warm-bg);
+  border-left: 2px solid #ad8f5d;
+}
+.desktop-app .agent-gaps h4 {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: var(--warm);
+}
+.desktop-app .agent-gaps ul {
+  padding-left: 18px;
+  margin: 0;
+  font-size: 12px;
+  color: var(--warm);
+}
+.desktop-app .agent-accept {
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+  margin-top: 18px;
+}
+.desktop-app .agent-accept p,
+.desktop-app .agent-next-step > p {
+  color: var(--muted);
+  font-size: 13px;
+}
+.desktop-app .agent-next-step .agent-panel-heading {
+  margin-bottom: 8px;
+}
+.desktop-app .agent-progress {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 20px 0;
+}
+.desktop-app .agent-progress div {
+  border-left: 1px solid var(--line);
+  padding-left: 12px;
+}
+.desktop-app .agent-progress dt {
+  font-size: 11px;
+  color: var(--muted);
+}
+.desktop-app .agent-progress dd {
+  font:
+    26px Consolas,
+    monospace;
+  color: var(--accent);
+  margin: 6px 0 0;
+}
+.desktop-app .agent-progress dd small {
+  font-size: 13px;
+  color: var(--muted);
+}
+.desktop-app .agent-next-step .agent-recommendation {
+  color: var(--ink);
+  background: var(--pale);
+  padding: 14px;
+}
+.desktop-app .agent-next-step > label {
+  max-width: 420px;
+  margin: 18px 0 12px;
+}
+.desktop-app .agent-next-step > .agent-help {
+  margin-bottom: 12px;
+}
+.desktop-app .agent-alert {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  margin: 0 0 20px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.desktop-app .agent-alert > span {
+  min-width: 0;
+}
+.desktop-app .agent-error {
+  background: var(--negative-bg);
+  border-color: #ba8284;
+  color: var(--negative);
+}
+.desktop-app .agent-notice {
+  background: var(--positive-bg);
+  border-color: #65a58c;
+  color: var(--positive);
+}
+.desktop-app .agent-alert button {
+  flex-shrink: 0;
+}
+.desktop-app .agent-loading,
+.desktop-app .agent-busy {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--accent);
+  font-size: 13px;
+}
+.desktop-app .agent-busy {
+  position: fixed;
+  bottom: 18px;
+  right: 18px;
+  z-index: 50;
+  background: var(--pale);
+  border: 1px solid var(--line);
+  padding: 12px 18px;
+  border-radius: 4px;
+}
+.desktop-app .agent-workspace :is(p, h3, h4, li, a) {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 1100px) {
+  .desktop-app .agent-layout {
+    grid-template-columns: minmax(250px, 300px) minmax(0, 1fr);
+    gap: 16px;
+  }
+  .desktop-app .agent-panel {
+    padding: 18px;
+  }
+  .desktop-app .agent-progress {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 850px) {
+  .desktop-app .agent-workspace {
+    padding: 24px 18px 45px;
+  }
+  .desktop-app .agent-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .desktop-app .agent-sidebar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .desktop-app .agent-intro {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .desktop-app .agent-intro h1 {
+    font-size: 27px;
+  }
+  .desktop-app .agent-edition {
+    padding: 3px 8px;
+  }
+  .desktop-app .agent-task-list button {
+    min-width: 180px;
+  }
+  .desktop-app .agent-progress {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+@media (max-width: 500px) {
+  .desktop-app .agent-progress {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .desktop-app .agent-alert {
+    flex-wrap: wrap;
+  }
+  .desktop-app .agent-task-meta span + span {
+    padding-left: 0;
+    border: 0;
+  }
+  .desktop-app .agent-workspace .agent-accept button {
+    width: 100%;
+  }
+}

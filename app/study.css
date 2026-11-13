@@ -1,6 +1,4 @@
 @import "tailwindcss";
-/* Keep the released utility set stable in clean source checkouts. */
-@source inline("truncate shadow");
 :root {
   --ink: #203a35;
   --muted: #66746e;
@@ -156,6 +154,7 @@ small,
   color: #bdd0c4;
   margin-top: 3px;
 }
+.section-navigation > select { display: none; }
 .sidebar nav {
   display: flex;
   flex-direction: column;
@@ -187,20 +186,6 @@ small,
 .sidebar-bottom {
   margin-top: auto;
   padding-top: 45px;
-}
-.small-steps {
-  padding: 20px 12px 27px;
-}
-.small-steps .eyebrow {
-  color: #bed3b7;
-  font-size: 9px;
-}
-.small-steps p {
-  font:
-    22px/1.4 Georgia,
-    serif;
-  color: #e3ecdc;
-  margin-top: 12px;
 }
 .step-lines {
   display: flex;
@@ -305,73 +290,6 @@ small,
   color: var(--muted);
   font-size: 14px;
   line-height: 1.8;
-}
-.intro-graphic {
-  position: relative;
-  width: 245px;
-  height: 190px;
-  margin-right: 40px;
-}
-.paper {
-  position: absolute;
-  width: 116px;
-  height: 145px;
-  border: 1px solid #c9d5c5;
-  border-radius: 8px;
-  padding: 17px;
-}
-.paper.back {
-  top: 7px;
-  left: 65px;
-  transform: rotate(13deg);
-  background: #e4ebda;
-}
-.paper.front {
-  left: 30px;
-  top: 30px;
-  transform: rotate(-9deg);
-  background: #fffef9;
-}
-.paper.front > span {
-  display: grid;
-  place-items: center;
-  width: 37px;
-  height: 37px;
-  background: #edf1e6;
-  border-radius: 6px;
-  margin-bottom: 16px;
-}
-.paper i {
-  display: block;
-  height: 4px;
-  margin: 9px 0;
-  background: #cdd8c8;
-  border-radius: 2px;
-}
-.paper i:last-child {
-  width: 60%;
-}
-.paper-check {
-  position: absolute;
-  bottom: 5px;
-  right: -18px;
-  width: 35px;
-  height: 35px;
-  background: var(--green);
-  color: white;
-  border: 4px solid var(--cream);
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-}
-.graphic-dot {
-  position: absolute;
-  width: 9px;
-  height: 9px;
-  background: #cfb887;
-  border-radius: 50%;
-  top: 26px;
-  left: 20px;
 }
 .materials-layout {
   display: grid;
@@ -1348,10 +1266,6 @@ progress::-webkit-progress-value {
     grid-template-columns: minmax(0, 1fr) 270px;
     gap: 22px;
   }
-  .intro-graphic {
-    margin-right: 5px;
-    width: 200px;
-  }
   .learning-layout {
     grid-template-columns: 170px minmax(0, 1fr);
     gap: 18px;
@@ -1396,10 +1310,6 @@ progress::-webkit-progress-value {
   .tip {
     margin-top: 0;
     padding: 20px 0;
-  }
-  .intro-graphic {
-    width: 160px;
-    margin-right: 0;
   }
   .save-status {
     display: none;
@@ -1511,7 +1421,6 @@ progress::-webkit-progress-value {
   .page-intro p {
     font-size: 13px;
   }
-  .intro-graphic,
   .desktop-break {
     display: none;
   }

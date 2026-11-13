@@ -10,7 +10,7 @@ import { randomUUID } from "node:crypto";
 const root = fileURLToPath(new URL("../", import.meta.url));
 const require = createRequire(new URL("../desktop/package.json", import.meta.url));
 const dataDir = await mkdtemp(path.join(tmpdir(), "studystep-theme-"));
-const out = path.join(root, "artifacts", "learning-theme");
+const out = path.join(root, "artifacts", "card-index");
 await mkdir(out, { recursive: true });
 const now = Date.now();
 // Existing version-1 data must survive the focus presentation changes.
@@ -43,7 +43,7 @@ try {
   }
   await page.getByText("All changes saved", {exact:true}).waitFor();
   await resize(1440);
-  assert.equal(await page.locator(".desktop-app").evaluate(el => getComputedStyle(el).backgroundColor), "rgb(8, 12, 18)");
+  assert.equal(await page.locator(".desktop-app").evaluate(el => getComputedStyle(el).backgroundColor), "rgb(231, 236, 242)");
   await page.getByRole("heading", {name: "What would you like to learn?", exact:true}).waitFor();
   await page.getByText("A personal learning workspace", {exact:true}).waitFor();
   assert.equal(await page.locator(".study-flow").count(), 0, "Study tools should not impose a numbered operational workflow");
@@ -65,14 +65,20 @@ try {
   await shot("02-import-dialog");
   await page.getByRole("button", {name: "Preview import", exact:true}).click();
   await page.getByRole("button", {name: "Replace workspace with this import", exact:true}).click();
+  await page.locator(".study-utilities[open] > summary").click();
+  await page.getByRole("button", {name:"Dismiss message"}).click();
   await page.getByRole("button", {name: "Study guide", exact:true}).click();
   await shot("03-guide");
   await page.getByRole("button", {name: "Practice", exact:true}).click();
   await shot("04-practice");
+  await page.locator(".answer-option").first().click();
+  await page.getByRole("button", {name:"Check my answer"}).click();
+  await page.locator(".feedback").waitFor();
   await page.getByRole("button", {name: "Recall practice", exact:true}).click();
   await page.getByRole("heading", {name: "Recall practice", exact:true}).waitFor();
   await page.getByRole("button", {name: "Flashcards", exact:true}).click();
   await page.getByRole("button", {name: "Review due cards", exact:true}).click();
+  await shot("05-flashcard-prompt");
   await page.getByRole("button", {name: "Reveal reference answer", exact:true}).click();
   await shot("05-flashcards");
   await page.getByRole("button", {name: "Focus collection", exact:true}).click();
@@ -94,6 +100,16 @@ try {
   assert.equal(await page.locator('.station-option').getByRole('button',{name:'Use this design',exact:true}).first().isDisabled(), true);
   await page.getByRole("button", {name: "Study journal", exact:true}).click();
   await shot("08-study-journal");
+  const motion = page.getByRole("checkbox", {name:"Less motion"});
+  await page.emulateMedia({reducedMotion:"no-preference"});
+  const animation = () => page.locator(".weekly-panel").evaluate(el => getComputedStyle(el).animationName);
+  assert.equal(await animation(), "none");
+  await motion.focus();
+  await motion.press("Space");
+  await page.waitForSelector(".desktop-app:not(.still)");
+  assert.equal(await animation(), "file-in");
+  await page.emulateMedia({reducedMotion:"reduce"});
+  assert.equal(await animation(), "none");
   await page.getByRole("button", {name: "Study", exact:true}).click();
   await resize(820,1000);
   await shot("09-narrow-study");

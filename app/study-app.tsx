@@ -37,11 +37,16 @@ import {
   type Attempt,
 } from "../lib/study";
 import { extractFile } from "../lib/extract";
+import RelatedTopics from "../local/RelatedTopics";
+import FollowedSources from "../local/FollowedSources";
 import TopicSearch from "../local/TopicSearch";
+import PracticeNext from "../local/PracticeNext";
 import Flashcards from "../local/Flashcards";
 import "../local/learning.css";
 import SectionPicker from "../local/SectionPicker";
 import { selectPassages, GENERATION_LIMIT } from "../lib/selection";
+import SectionNavigation from "../local/SectionNavigation";
+import { downloadText } from "../lib/download";
 import LocalTools from "../local/tools";
 
 type Tab = "materials" | "guide" | "practice" | "cards" | "trail";
@@ -198,10 +203,31 @@ export default function StudyApp({ local = false }: { local?: boolean }) {
       setBusy("");
     }
   }
-  async function reload() {
+  function preserveAgentConflict() {
+    if (timer.current) clearTimeout(timer.current);
+    conflict.current = true;
+    setSaving("Changes not saved");
+    setError("The study workspace changed while agent material was arriving. Your current work is still visible. Copy any unsaved text before reloading the updated workspace.");
+  }
+  async function reload(protectCurrent = false) {
+    const captured = protectCurrent ? {
+      data: JSON.stringify(stateRef.current),
+      saved: saved.current,
+      revision: revision.current,
+    } : null;
     try {
       setLoadFailed(false);
       const r = await api("/api/workspace");
+      if (captured && (
+        savePromise.current || conflict.current ||
+        captured.data !== JSON.stringify(stateRef.current) ||
+        captured.saved !== saved.current || captured.revision !== revision.current
+      )) {
+        // A user action (including a save that already finished) can occur
+        // while GET waits for model status. Never adopt that stale response.
+        preserveAgentConflict();
+        return;
+      }
       adopt(r.data, r.revision);
       setAiReady(r.aiReady);
       conflict.current = false;
@@ -230,6 +256,20 @@ export default function StudyApp({ local = false }: { local?: boolean }) {
       if (timer.current) clearTimeout(timer.current);
     };
   }, []);
+  useEffect(() => {
+    if (!local) return;
+    function workspaceChanged() {
+      // An agent acceptance is another writer. Keep any local unsaved work
+      // visible instead of silently adopting a new workspace over it.
+      if (savePromise.current || saved.current !== JSON.stringify(stateRef.current)) {
+        preserveAgentConflict();
+        return;
+      }
+      void reload(true);
+    }
+    window.addEventListener("studystep:workspace-changed", workspaceChanged);
+    return () => window.removeEventListener("studystep:workspace-changed", workspaceChanged);
+  }, [local]);
   useEffect(() => {
     if (!local || !loaded || aiReady) return;
     let cancelled = false,
@@ -271,6 +311,7 @@ export default function StudyApp({ local = false }: { local?: boolean }) {
         saved.current = encoded;
       }
       setSaving("All changes saved");
+      if (local) window.dispatchEvent(new Event("studystep:progress-saved"));
     };
     const promise = work();
     savePromise.current = promise;
@@ -608,26 +649,37 @@ export default function StudyApp({ local = false }: { local?: boolean }) {
     }
     if (guide.gaps.length)
       lines.push("## Material gaps", ...guide.gaps.map((g) => `- ${g}`));
-    const url = URL.createObjectURL(
-        new Blob([lines.join("\n")], { type: "text/markdown;charset=utf-8" }),
-      ),
-      a = document.createElement("a");
-    a.href = url;
-    a.download = "studystep-guide.md";
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    downloadText(lines.join("\n"), "studystep-guide.md", "text/markdown;charset=utf-8");
   }
   useEffect(() => {
     document.getElementById("main")?.focus({ preventScroll: true });
   }, [tab]);
   useEffect(() => {
-    if (tab === "practice")
-      document
-        .querySelector(".question-card h2")
-        ?.setAttribute("tabindex", "-1");
-    if (tab === "practice")
-      document.querySelector<HTMLElement>(".question-card h2")?.focus();
+    if (tab === "practice") document.querySelector<HTMLElement>(".question-card h2")?.focus();
   }, [tab, data.currentQuestion]);
+  const sections = [
+    {
+      id: "materials",
+      label: local ? "Create a set" : "Materials",
+      icon: FolderOpen,
+    },
+    { id: "guide", label: "Study guide", icon: BookOpen },
+    { id: "practice", label: "Practice", icon: CircleHelp },
+    ...(local
+      ? [
+          {
+            id: "cards" as const,
+            label: "Flashcards",
+            icon: Layers3,
+          },
+          {
+            id: "trail" as const,
+            label: "Recall practice",
+            icon: Sparkles,
+          },
+        ]
+      : []),
+  ] as const;
   const answered = new Set(data.attempts.map((a) => a.questionId)).size,
     correct = guide
       ? data.attempts.filter((a) => independentCorrect(a, guide)).length
@@ -655,43 +707,7 @@ export default function StudyApp({ local = false }: { local?: boolean }) {
             </small>
           </span>
         </button>
-        <nav aria-label="Workspace navigation">
-          {(
-            [
-              {
-                id: "materials",
-                label: local ? "Create a set" : "Materials",
-                icon: FolderOpen,
-              },
-              { id: "guide", label: "Study guide", icon: BookOpen },
-              { id: "practice", label: "Practice", icon: CircleHelp },
-              ...(local
-                ? [
-                    {
-                      id: "cards" as const,
-                      label: "Flashcards",
-                      icon: Layers3,
-                    },
-                    {
-                      id: "trail" as const,
-                      label: "Recall practice",
-                      icon: Sparkles,
-                    },
-                  ]
-                : []),
-            ] as const
-          ).map((n) => (
-            <button
-              key={n.id}
-              className={tab === n.id ? "nav-item selected" : "nav-item"}
-              onClick={() => setTab(n.id)}
-              aria-current={tab === n.id ? "page" : undefined}
-            >
-              <n.icon size={19} />
-              {n.label}
-            </button>
-          ))}
-        </nav>
+        <SectionNavigation label="Workspace navigation" sections={sections} current={tab} onChange={setTab} study />
         <div className="sidebar-bottom">
           <div className="privacy">
             <ShieldCheck size={16} />
@@ -709,17 +725,7 @@ export default function StudyApp({ local = false }: { local?: boolean }) {
             <span>Study set</span>
             <ChevronRight size={13} />
             <strong>
-              {tab === "materials"
-                ? local
-                  ? "Create a set"
-                  : "Materials"
-                : tab === "guide"
-                  ? "Study guide"
-                  : tab === "cards"
-                    ? "Flashcards"
-                    : tab === "trail"
-                      ? "Recall practice"
-                      : "Practice"}
+              {sections.find(section => section.id === tab)?.label}
             </strong>
           </div>
           <div className="top-actions">
@@ -867,6 +873,13 @@ export default function StudyApp({ local = false }: { local?: boolean }) {
               )}
               {local && entry === "topic" && (
                 <TopicSearch locked={locked} onUse={useTopic} />
+              )}
+              {local && <FollowedSources />}
+              {local && (guide || data.sources.length > 0) && (
+                <RelatedTopics key={JSON.stringify([guide?.title, guide?.units.map(u=>u.title), data.sources.map(s=>s.id)])}
+                  data={data} locked={locked} onDecision={item=>update(d=>({
+                    ...d, relatedTopics:[...(d.relatedTopics ?? []).filter(t=>t.pageId!==item.pageId),item]
+                  }))} />
               )}
               <div
                 className="materials-layout"
@@ -1257,7 +1270,7 @@ export default function StudyApp({ local = false }: { local?: boolean }) {
                             TOPIC {data.currentUnit + 1} OF {guide.units.length}
                           </span>
                         </div>
-                        <h2>{unit.title}</h2>
+                        <h2 key={unit.id}>{unit.title}</h2>
                         <p className="objective">{unit.objective}</p>
                         <p className="explanation">{unit.explanation}</p>
                         {unit.keyPoints.length > 0 && (
@@ -1419,7 +1432,7 @@ export default function StudyApp({ local = false }: { local?: boolean }) {
                       value={answered}
                       max={guide.questions.length}
                     />
-                    <h2>{question.prompt}</h2>
+                    <h2 key={question.id} tabIndex={-1}>{question.prompt}</h2>
                     <fieldset disabled={Boolean(attempt) || locked}>
                       <legend className="sr-only">Choose one answer</legend>
                       {question.options.map((o, i) => (
@@ -1561,6 +1574,16 @@ export default function StudyApp({ local = false }: { local?: boolean }) {
                     </div>
                   </section>
                   <aside className="practice-aside">
+                    {local && guide.questions.every(q => data.attempts.some(a => a.questionId === q.id)) && (
+                      <PracticeNext key={guide.questions.map(q => q.id).join(",")} guide={guide} attempts={data.attempts}
+                        assessments={data.topicAssessments} disabled={locked}
+                        onAssessment={(id, value) => update(d => {
+                          const topicAssessments = { ...d.topicAssessments };
+                          if (value) topicAssessments[id] = value;
+                          else delete topicAssessments[id];
+                          return { ...d, topicAssessments };
+                        })} />
+                    )}
                     <div className="practice-summary">
                       <span className="eyebrow">YOUR PRACTICE SO FAR</span>
                       <strong className="big-number">

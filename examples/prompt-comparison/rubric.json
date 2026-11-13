@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "scope": "Score each saved initial and final study item against its frozen passage, goal, challenge level and previous questions. Record a short reason and quote the relevant passage. Review both prompts under these same rules.",
+  "criteria": {
+    "support": "Pass when the cited passage supports the keyed answer to the literal question, including direction, qualifiers and necessary premises. A quotation alone is insufficient. Fail an unsupported claim, wrong key or ambiguous answer.",
+    "novelty": "Pass when the item tests a different fact or reasoning operation from the supplied previous questions. Fail a paraphrase that tests the same fact in the same way. An empty previous-question list gives no prior duplicate.",
+    "challenge": "For foundation, a supported recall item can pass. For explanation, require a causal relationship or meaningful comparison. For application, require the learner to use a relationship in the case. Fail if removing the scenario leaves the same definition question."
+  },
+  "judgments": "Use pass, fail or uncertain for each criterion. Mark uncertain when the evidence does not resolve the judgment. Keep model abstentions, failed runs and missing runs distinct from reviewer uncertainty.",
+  "repair": "For each initial failure, compare the final response to the same documented defect. Mark fixed only when that defect is removed and the criterion passes. If a replacement item evades the defect, mark it unresolved.",
+  "reporting": "Report item-level changes by criterion, initial defects fixed or unresolved, and paired gains and regressions. Count model calls including failed attempts. Preserve unscored cases and give denominators. Study-set acceptance is a separate learner decision."
+}

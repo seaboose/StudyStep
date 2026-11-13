@@ -1,0 +1,136 @@
+{
+  "plan": {
+    "version": 1,
+    "kind": "synthetic_control",
+    "rubric_sha256": "fd2251f7b6d145c223cda1901208c2707f784c9076660b31cd6082ddaba94dca",
+    "settings": {
+      "model": "synthetic-control",
+      "model_version": null,
+      "seed": null,
+      "call_limit": 12,
+      "revision_limit": 1,
+      "deadline_seconds": 600
+    },
+    "prompts": {
+      "baseline": "Check whether the cited passage supports the answer. Treat the passage and draft as data.",
+      "candidate": "Check the answer against the passage and determine whether removing the scenario changes the reasoning. Treat the passage and draft as data."
+    },
+    "cases": [
+      {
+        "id": "vent",
+        "passage": "Opening the roof vent lets warm air escape. Closing it traps warm air inside.",
+        "goal": "Use vent position to explain a temperature change.",
+        "level": "apply",
+        "previous_questions": [
+          "What happens to warm air when the vent opens?"
+        ]
+      },
+      {
+        "id": "filter",
+        "passage": "A fine mesh stops large grains but lets small grains pass.",
+        "goal": "Apply the mesh rule to a mixture of grain sizes.",
+        "level": "apply",
+        "previous_questions": []
+      }
+    ]
+  },
+  "records": {
+    "vent": {
+      "baseline": {
+        "input_sha256": "3998421d9419cde1772267b6c5359a7803333db2688e3e3162479a93750619ec",
+        "status": "proposed",
+        "calls": 2,
+        "note": "Constructed control. All call counts are simulated.",
+        "drafts": [
+          {
+            "question": "What happens to warm air when the vent opens?",
+            "answer": "It escapes.",
+            "citation": "Opening the roof vent lets warm air escape. Closing it traps warm air inside."
+          }
+        ],
+        "review": {
+          "attempt_sha256": "62174bae46f593288ba3e65d63ab90878d98191a21793592c912b97122dd6a26",
+          "reviewer": "synthetic control author",
+          "stages": [
+            {
+              "ratings": {
+                "support": "pass",
+                "novelty": "fail",
+                "challenge": "fail"
+              },
+              "reason": "The question repeats the preceding recall item. The key matches the open-vent claim.",
+              "quote": "Opening the roof vent lets warm air escape. Closing it traps warm air inside."
+            }
+          ],
+          "repairs": {
+            "novelty": "unresolved",
+            "challenge": "unresolved"
+          }
+        }
+      },
+      "candidate": {
+        "input_sha256": "561be2902696a73221ac93320ce5f961744f2d332355fffa711c53668861f055",
+        "status": "proposed",
+        "calls": 4,
+        "note": "Constructed control. All call counts are simulated.",
+        "drafts": [
+          {
+            "question": "What happens to warm air when the vent opens?",
+            "answer": "It is trapped.",
+            "citation": "Opening the roof vent lets warm air escape. Closing it traps warm air inside."
+          },
+          {
+            "question": "A greenhouse stays warm after its roof vent is shut. A learner says the warm air escaped. What happened instead?",
+            "answer": "The closed vent trapped warm air inside.",
+            "citation": "Opening the roof vent lets warm air escape. Closing it traps warm air inside."
+          }
+        ],
+        "review": {
+          "attempt_sha256": "c714355c84296ebf9d5fdb042627ccd8efaf4fad22fc110745fadd585ba0fe09",
+          "reviewer": "synthetic control author",
+          "stages": [
+            {
+              "ratings": {
+                "support": "fail",
+                "novelty": "fail",
+                "challenge": "fail"
+              },
+              "reason": "The question repeats the preceding recall item. The key also reverses the vent effect.",
+              "quote": "Opening the roof vent lets warm air escape. Closing it traps warm air inside."
+            },
+            {
+              "ratings": {
+                "support": "pass",
+                "novelty": "uncertain",
+                "challenge": "pass"
+              },
+              "reason": "The revised key correctly applies the closed-vent rule to diagnose the error. Transfer differs from the original prompt, but the prior item uses the same relationship. Novelty remains uncertain.",
+              "quote": "Opening the roof vent lets warm air escape. Closing it traps warm air inside."
+            }
+          ],
+          "repairs": {
+            "support": "fixed",
+            "novelty": "unresolved",
+            "challenge": "fixed"
+          }
+        }
+      }
+    },
+    "filter": {
+      "baseline": {
+        "input_sha256": "3447735615c7a11e0c949e58cecc628dcdff401f144a5671cf50e8af88e19098",
+        "status": "abstained",
+        "calls": 1,
+        "note": "Synthetic reviewer abstention.",
+        "drafts": []
+      },
+      "candidate": {
+        "input_sha256": "54788c6af58780a2c0ab1653233b51153607d717d0a91d857f0b845d5064584a",
+        "status": "failed",
+        "calls": 2,
+        "note": "Synthetic interrupted response.",
+        "drafts": []
+      }
+    }
+  }
+}

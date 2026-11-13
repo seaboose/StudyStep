@@ -4,7 +4,7 @@ import LocalApp from "./LocalApp";
 import "../app/study.css";
 import "./local.css";
 import "./direct-flow.css";
-import "./surge-theme.css";
+import "./card-index.css";
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <LocalApp />

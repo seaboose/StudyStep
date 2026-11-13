@@ -21,7 +21,9 @@ import { createFocusStore } from "./focus-store.mjs";
 import { createReviewStore } from "./review-store.mjs";
 import { createDraftStore } from "./draft-store.mjs";
 import { selectPassages } from "../.runtime/local-server/selection.mjs";
+import { createTopicFollows } from "./topic-follows.mjs";
 import { searchTopics, topicSource } from "./topic-search.mjs";
+import { createAgentStore } from "./agent-workflow.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 export async function createLocalServer({
@@ -29,8 +31,11 @@ export async function createLocalServer({
   port = 5173,
   fetcher = fetch,
   topicFetcher = fetch,
+  agentsEnabled = false,
+  agentDependencies = {},
 } = {}) {
   await mkdir(dataDir, { recursive: true });
+  const follows = createTopicFollows(dataDir, topicFetcher);
   const focusStore = createFocusStore(dataDir);
   const reviewStore = createReviewStore(dataDir, load);
   const draftStore = createDraftStore(dataDir, load);
@@ -40,6 +45,19 @@ export async function createLocalServer({
     job = null,
     controller = null,
     generationBusy = false;
+  const agentStore = agentsEnabled
+    ? createAgentStore({
+        dataDir,
+        loadWorkspace: load,
+        saveWorkspace: save,
+        modelState,
+        reviewStore,
+        fetcher,
+        topicFetcher,
+        generationAllowed: () => !generationBusy,
+        ...agentDependencies,
+      })
+    : null;
   const locked = (fn) => {
     const result = pendingWrite.then(fn);
     pendingWrite = result.catch(() => {});
@@ -167,6 +185,13 @@ export async function createLocalServer({
       )
         return reply({ error: "Use the StudyStep app to make changes." }, 403);
       try {
+        if (url.pathname === "/api/features" && req.method === "GET")
+          return reply({ agents: agentsEnabled });
+        if (url.pathname === "/api/agents" && agentStore) {
+          if (req.method === "GET") return reply(await agentStore.get());
+          if (req.method === "POST")
+            return reply(await agentStore.command(await body(req)));
+        }
         if (url.pathname === "/api/editor-draft") {
           if (req.method === "GET") return reply(await draftStore.get());
           if (req.method === "PUT")
@@ -178,6 +203,10 @@ export async function createLocalServer({
           if (req.method === "GET") return reply(await reviewStore.get());
           if (req.method === "POST")
             return reply(await reviewStore.command(await body(req)));
+        }
+        if (url.pathname === "/api/topic-follows") {
+          if (req.method === "GET") return reply(await follows.get());
+          if (req.method === "POST") return reply(await follows.command(await body(req)));
         }
         if (url.pathname === "/api/topics" && req.method === "POST")
           return reply({
@@ -225,7 +254,7 @@ export async function createLocalServer({
             return reply({ cancelled: true });
           }
           if (req.method === "POST") {
-            if (generationBusy)
+            if (generationBusy || agentStore?.isBusy())
               return reply(
                 { error: "A local generation is already running." },
                 409,
@@ -345,7 +374,9 @@ export async function createLocalServer({
           {
             error:
               e.name === "ZodError"
-                ? "Some study-set fields are missing or invalid. Check the editor or import file."
+                ? url.pathname === "/api/agents"
+                  ? "Some agent-task fields are invalid. Check the topic, goal and challenge level, then try again."
+                  : "Some study-set fields are missing or invalid. Check the editor or import file."
                 : e.message || "Could not finish this action.",
           },
           e.status || 400,
@@ -375,7 +406,20 @@ export async function createLocalServer({
         ".woff2": "font/woff2",
         ".ico": "image/x-icon",
       };
+      const compressedHeaders = {};
+      // Older packaged assets have no compressed copy. Serve the original there.
+      if (/\.(?:css|m?js)$/.test(target)) {
+        compressedHeaders.Vary = "Accept-Encoding";
+        const acceptsGzip = (req.headers["accept-encoding"] || "").split(",").some(value => {
+          const match = /^\s*gzip\s*(?:;\s*q=([\d.]+)\s*)?$/i.exec(value);
+          return match && (match[1] === undefined || Number(match[1]) > 0);
+        });
+        if (acceptsGzip && (await stat(target + ".gz").catch(() => null))?.isFile()) {
+          compressedHeaders["Content-Encoding"] = "gzip";
+        }
+      }
       res.writeHead(200, {
+        ...compressedHeaders,
         "Content-Type":
           types[path.extname(target)] || "application/octet-stream",
         "X-Content-Type-Options": "nosniff",
@@ -384,7 +428,8 @@ export async function createLocalServer({
         "Content-Security-Policy":
           "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; worker-src 'self' blob:; object-src 'none'; frame-ancestors 'none'",
       });
-      res.end(req.method === "HEAD" ? undefined : await readFile(target));
+      const file = compressedHeaders["Content-Encoding"] ? target + ".gz" : target;
+      res.end(req.method === "HEAD" ? undefined : await readFile(file));
     } catch {
       return reply(
         {
@@ -399,6 +444,7 @@ export async function createLocalServer({
     server.once("error", reject);
     server.listen(port, "127.0.0.1", resolve);
   });
+  follows.start();
   const pauseFocus = async () => {
     const { state } = await focusStore.get();
     if (state.active?.status === "running")
@@ -409,7 +455,9 @@ export async function createLocalServer({
     url: `http://127.0.0.1:${server.address().port}`,
     pauseFocus,
     close: async () => {
+      await follows.close();
       await pauseFocus();
+      await agentStore?.close();
       return new Promise((resolve) => {
         controller?.abort();
         server.close(resolve);

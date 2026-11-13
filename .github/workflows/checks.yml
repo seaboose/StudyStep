@@ -1,14 +1,59 @@
 name: Checks
-on:
-  push:
-    branches: ['**']
-  pull_request:
-  workflow_dispatch:
+on: [push, pull_request, workflow_dispatch]
 permissions:
   contents: read
 jobs:
-  verify:
+  consumer:
+    name: Consumer release / ${{ matrix.os }}
     strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    env:
+      STUDYSTEP_TEST_HIDDEN: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.25.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --dir desktop install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm build
+      - run: pnpm test:consumer
+      - if: runner.os == 'Linux'
+        run: xvfb-run -a node tests/desktop-smoke.mjs && xvfb-run -a node tests/desktop-practice-next.mjs
+        env:
+          STUDYSTEP_TEST_SOURCE: '1'
+      - if: runner.os == 'Windows'
+        run: pnpm desktop:package
+      - if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $env:STUDYSTEP_TEST_EXE = (Get-Content desktop/latest-build.json -Raw | ConvertFrom-Json).executable
+          node tests/desktop-smoke.mjs
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          node tests/desktop-practice-next.mjs
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          $env:STUDYSTEP_SEARCH_FIXTURE = "1"
+          node tests/desktop-related-topics.mjs
+      - if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: StudyStep-Windows-x64
+          path: desktop/releases/**/StudyStep-win32-x64/
+          include-hidden-files: true
+          retention-days: 14
+
+  developer:
+    name: Developer reliability / ${{ matrix.os }}
+    strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
@@ -22,19 +67,11 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm typecheck
       - run: pnpm build
-      - run: pnpm test
-      - if: runner.os == 'Windows'
-        run: pnpm --dir desktop install --frozen-lockfile
-      - if: runner.os == 'Windows'
-        run: node tests/desktop-smoke.mjs
-      - if: runner.os == 'Windows'
-        run: pnpm desktop:package
-      - if: runner.os == 'Windows'
+      - run: pnpm test:developer
+      - if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: StudyStep-Windows-x64
-          path: desktop/releases/**/StudyStep-win32-x64/
-          include-hidden-files: true
+          name: maintenance-replay-${{ matrix.os }}
+          path: artifacts/maintenance/
           retention-days: 14

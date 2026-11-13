@@ -118,6 +118,24 @@ try {
     await readFile(path.join(data, "focus.json"), "utf8"),
   );
   assert.equal(focus.active.status, "paused");
+  await page.getByRole("button", { name: "Focus timer", exact: true }).click();
+  await page.getByRole("button", { name: "Finish session", exact: true }).click();
+  await page.getByRole("button", { name: "Save this session", exact: true }).click();
+  await page.getByRole("button", { name: "Study journal", exact: true }).click();
+  await page.getByText(/Finished early/).waitFor();
+  const exportPath = path.join(data, "journal-export.json");
+  await app.evaluate(({ BrowserWindow }, target) => {
+    const session = BrowserWindow.getAllWindows()[0].webContents.session;
+    globalThis.exportDone = new Promise(resolve => session.once("will-download", (_event, item) => {
+      item.setSavePath(target);
+      item.once("done", (_event, status) => resolve(status));
+    }));
+  }, exportPath);
+  await page.getByRole("button", { name: "Export focus history" }).click();
+  assert.equal(await app.evaluate(() => globalThis.exportDone), "completed");
+  const exported = JSON.parse(await readFile(exportPath, "utf8"));
+  assert.equal(exported.format, "studystep-focus-backup");
+  assert.equal(exported.state.history.at(-1).outcome, "ended");
   assert.deepEqual(errors, []);
   console.log(
     "Desktop checks passed: sandbox, import, reveal/rating, focus pause, and restart persistence.",
@@ -128,3 +146,4 @@ try {
 } finally {
   await app?.close().catch(() => {});
 }
+

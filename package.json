@@ -1,6 +1,6 @@
 {
   "name": "studystep",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "private": true,
   "type": "module",
   "description": "A local desktop study companion for source-linked practice, review, and focus.",
@@ -12,10 +12,13 @@
   "scripts": {
     "build": "node scripts/build-local.mjs",
     "typecheck": "tsc --noEmit",
-    "test": "node scripts/test-core.mjs && node --test tests/local.test.mjs tests/focus.test.mjs tests/review.test.mjs tests/improvements.test.mjs tests/refinement.test.mjs",
+    "test": "pnpm test:consumer && pnpm test:developer",
     "start": "node scripts/start-local.mjs --open",
     "desktop": "node desktop/start.mjs",
-    "desktop:package": "node desktop/package-windows.mjs"
+    "dev": "node desktop/dev.mjs",
+    "desktop:package": "node desktop/package-windows.mjs",
+    "test:consumer": "node scripts/test-core.mjs && node --test tests/local.test.mjs tests/focus.test.mjs tests/review.test.mjs tests/improvements.test.mjs tests/refinement.test.mjs tests/review-migration.test.mjs tests/topic-follow-lifecycle.test.mjs",
+    "test:developer": "node --test tests/agents.test.mjs tests/agent-generation.test.mjs tests/agents-adaptive-flow.test.mjs tests/advanced-generation.test.mjs tests/agent-evidence.test.mjs tests/answer-candidates.test.mjs tests/reviewed-answer-keys.test.mjs tests/timing-keys.test.mjs tests/learning-trajectories.test.mjs && node scripts/maintenance-replay.mjs"
   },
   "dependencies": {
     "fflate": "^0.8.2",

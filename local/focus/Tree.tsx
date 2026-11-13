@@ -21,7 +21,7 @@ export default function LearningPattern({
       viewBox="0 0 260 250"
       aria-hidden="true"
     >
-      <g fill="none" stroke="#26414c" strokeWidth="1">
+      <g fill="none" stroke="var(--line)" strokeWidth="1">
         <path d="m30 77 26-34 49-18m96 24 29 38-8 52M47 166l13 24 39 10m79-3 32-20" />
         <circle cx="130" cy="118" r="86" strokeDasharray="1 10" />
       </g>
@@ -38,7 +38,7 @@ export default function LearningPattern({
         <circle cx="178" cy="197" r="2" />
         <circle cx="210" cy="177" r="2.5" />
       </g>
-      <circle cx="130" cy="118" r="70" fill="#0b141e" stroke="#26414c" />
+      <circle cx="130" cy="118" r="70" fill="var(--panel)" stroke="var(--line)" />
       <circle
         cx="130"
         cy="118"
@@ -93,8 +93,8 @@ export default function LearningPattern({
         width="140"
         height="22"
         rx="4"
-        fill="#101923"
-        stroke="#26414c"
+        fill="var(--panel)"
+        stroke="var(--line)"
       />
       {Array.from({ length: 10 }, (_, index) => (
         <rect
@@ -104,7 +104,7 @@ export default function LearningPattern({
           width="9"
           height="8"
           rx="1"
-          fill={index < Math.ceil(completion * 10) ? color : "#26414c"}
+          fill={index < Math.ceil(completion * 10) ? color : "var(--line)"}
           opacity={index < Math.ceil(completion * 10) ? 0.9 : 0.5}
         />
       ))}

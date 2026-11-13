@@ -1,12 +1,14 @@
-import { cp, mkdir, readFile, writeFile, realpath } from "node:fs/promises";
+import { cp, mkdir, writeFile, realpath, readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { packager } from "@electron/packager";
 import { buildLocal } from "../scripts/build-local.mjs";
+// Packaging always regenerates production assets, even after a Dev session.
+delete process.env.STUDYSTEP_CHANNEL;
 await buildLocal();
 const root = fileURLToPath(new URL("../", import.meta.url));
-const metadata = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
+const version = JSON.parse(await readFile(path.join(root, "package.json"), "utf8")).version;
 const require = createRequire(path.join(root, "package.json"));
 // New staging and release folders keep earlier usable builds intact.
 const buildId = new Date().toISOString().replace(/[:.]/g, "-");
@@ -19,11 +21,16 @@ for (const name of [
   "scripts/local-server.mjs",
   "scripts/local-model.mjs",
   "scripts/local-generation.mjs",
+  "scripts/agent-workflow.mjs",
+  "scripts/agent-evidence.mjs",
+  "scripts/advanced-generation.mjs",
+  "scripts/answer-candidates.mjs",
   "scripts/draft-store.mjs",
   "scripts/generation-quality.mjs",
   "scripts/focus-store.mjs",
   "scripts/review-store.mjs",
   "scripts/topic-search.mjs",
+  "scripts/topic-follows.mjs",
   "desktop/main.mjs",
   "desktop/icon.ico",
   ".runtime/local-server",
@@ -41,7 +48,7 @@ await writeFile(
     {
       name: "studystep",
       productName: "StudyStep",
-      version: metadata.version,
+      version,
       description: "A personal learning workspace for your interests, study, and progress.",
       main: "desktop/main.mjs",
       type: "module",

@@ -1,4 +1,5 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
+import { gzipSync } from "node:zlib";
 import { fileURLToPath } from "node:url";
 import { build } from "vite";
 import ts from "typescript";
@@ -13,6 +14,7 @@ export async function buildLocal() {
     "review",
     "selection",
     "card-review",
+    "agent-workflow",
   ]) {
     const source = await readFile(`lib/${name}.ts`, "utf8");
     const compiled = ts
@@ -29,5 +31,12 @@ export async function buildLocal() {
     await writeFile(`.runtime/local-server/${name}.mjs`, compiled);
   }
   await build({ configFile: "vite.local.config.ts" });
+  const assets = ".local-dist/assets";
+  for (const name of await readdir(assets)) {
+    if (/\.(?:css|m?js)$/.test(name)) {
+      const file = `${assets}/${name}`;
+      await writeFile(file + ".gz", gzipSync(await readFile(file)));
+    }
+  }
 }
 if (process.argv[1] === fileURLToPath(import.meta.url)) await buildLocal();

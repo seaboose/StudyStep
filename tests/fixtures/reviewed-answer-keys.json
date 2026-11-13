@@ -1,0 +1,282 @@
+[
+  {
+    "case": {
+      "id": "two-stage-sampler",
+      "level": "apply",
+      "goal": "Diagnose which stage of a sample collector could explain a missing reading.",
+      "previous_questions": [
+        "Which stage writes a sample to the log?"
+      ],
+      "passage": "A bench sampler flashes a lamp when it takes a reading. A separate recorder writes the reading only while its latch is closed. Opening the latch stops writes but does not stop sampling. The lamp does not indicate whether a reading was written."
+    },
+    "question": "A learner claims: “The lamp flashing confirms the reading was written to the log”. Which source excerpt best corrects their reasoning?",
+    "answer": "does not indicate whether a reading was written",
+    "ratings": {
+      "support": "pass",
+      "novelty": "pass",
+      "challenge": "fail"
+    },
+    "reason": "A directly corrects the claim and tests a different fact, but I can pick it by matching the wording.",
+    "arm": "baseline"
+  },
+  {
+    "case": {
+      "id": "two-stage-sampler",
+      "level": "apply",
+      "goal": "Diagnose which stage of a sample collector could explain a missing reading.",
+      "previous_questions": [
+        "Which stage writes a sample to the log?"
+      ],
+      "passage": "A bench sampler flashes a lamp when it takes a reading. A separate recorder writes the reading only while its latch is closed. Opening the latch stops writes but does not stop sampling. The lamp does not indicate whether a reading was written."
+    },
+    "question": "A learner claims: “The lamp flashing means the reading was written to the log”. Which source excerpt best corrects their reasoning?",
+    "answer": "does not indicate whether a reading was written",
+    "ratings": {
+      "support": "pass",
+      "novelty": "pass",
+      "challenge": "fail"
+    },
+    "reason": "A directly corrects the claim and tests a different fact, but I can pick it by matching the wording.",
+    "arm": "baseline"
+  },
+  {
+    "case": {
+      "id": "two-stage-sampler",
+      "level": "apply",
+      "goal": "Diagnose which stage of a sample collector could explain a missing reading.",
+      "previous_questions": [
+        "Which stage writes a sample to the log?"
+      ],
+      "passage": "A bench sampler flashes a lamp when it takes a reading. A separate recorder writes the reading only while its latch is closed. Opening the latch stops writes but does not stop sampling. The lamp does not indicate whether a reading was written."
+    },
+    "question": "A learner claims: “The lamp flashing confirms the reading was written to the log”. Which source excerpt best corrects their reasoning?",
+    "answer": "does not indicate whether a reading was written",
+    "ratings": {
+      "support": "pass",
+      "novelty": "pass",
+      "challenge": "fail"
+    },
+    "reason": "A directly corrects the claim and tests a different fact, but I can pick it by matching the wording.",
+    "arm": "candidate"
+  },
+  {
+    "case": {
+      "id": "two-stage-sampler",
+      "level": "apply",
+      "goal": "Diagnose which stage of a sample collector could explain a missing reading.",
+      "previous_questions": [
+        "Which stage writes a sample to the log?"
+      ],
+      "passage": "A bench sampler flashes a lamp when it takes a reading. A separate recorder writes the reading only while its latch is closed. Opening the latch stops writes but does not stop sampling. The lamp does not indicate whether a reading was written."
+    },
+    "question": "A learner claims: “The lamp flashing confirms the reading was successfully written to the log”. Which source excerpt best corrects their reasoning?",
+    "answer": "does not indicate whether a reading was written",
+    "ratings": {
+      "support": "pass",
+      "novelty": "pass",
+      "challenge": "fail"
+    },
+    "reason": "C directly corrects the claim, but I can still pick it by matching the wording.",
+    "arm": "candidate"
+  },
+  {
+    "case": {
+      "id": "dye-divider",
+      "level": "explain",
+      "goal": "Explain why two indicator strips can respond at different times.",
+      "previous_questions": [
+        "What makes the indicator strip turn violet?"
+      ],
+      "passage": "In a demonstration tray, dye moves along two paper strips of equal length. A wax stripe interrupts the wet path on one strip until a drop bridges the gap. Both end tabs turn violet only after dye reaches them. A pale end tab by itself does not show whether dye has entered the strip."
+    },
+    "question": "Which source excerpt best explains why Both end tabs turn violet only after dye reaches them?",
+    "answer": "dye reaches them",
+    "ratings": {
+      "support": "fail",
+      "novelty": "fail",
+      "challenge": "fail"
+    },
+    "reason": "A repeats the question and tests the same fact as the prior question. It never asks why the strips differ in timing.",
+    "arm": "baseline"
+  },
+  {
+    "case": {
+      "id": "dye-divider",
+      "level": "explain",
+      "goal": "Explain why two indicator strips can respond at different times.",
+      "previous_questions": [
+        "What makes the indicator strip turn violet?"
+      ],
+      "passage": "In a demonstration tray, dye moves along two paper strips of equal length. A wax stripe interrupts the wet path on one strip until a drop bridges the gap. Both end tabs turn violet only after dye reaches them. A pale end tab by itself does not show whether dye has entered the strip."
+    },
+    "question": "Which source excerpt best explains why Both end tabs turn violet only after dye reaches them?",
+    "answer": "dye reaches them",
+    "ratings": {
+      "support": "fail",
+      "novelty": "fail",
+      "challenge": "fail"
+    },
+    "reason": "A repeats the question and tests the same fact as the prior question. It never asks why the strips differ in timing.",
+    "arm": "baseline"
+  },
+  {
+    "case": {
+      "id": "dye-divider",
+      "level": "explain",
+      "goal": "Explain why two indicator strips can respond at different times.",
+      "previous_questions": [
+        "What makes the indicator strip turn violet?"
+      ],
+      "passage": "In a demonstration tray, dye moves along two paper strips of equal length. A wax stripe interrupts the wet path on one strip until a drop bridges the gap. Both end tabs turn violet only after dye reaches them. A pale end tab by itself does not show whether dye has entered the strip."
+    },
+    "question": "Which source excerpt best explains why Both end tabs turn violet only after dye reaches them?",
+    "answer": "dye reaches them",
+    "ratings": {
+      "support": "fail",
+      "novelty": "fail",
+      "challenge": "fail"
+    },
+    "reason": "A repeats the question and tests the same fact as the prior question. It never asks why the strips differ in timing.",
+    "arm": "candidate"
+  },
+  {
+    "case": {
+      "id": "dye-divider",
+      "level": "explain",
+      "goal": "Explain why two indicator strips can respond at different times.",
+      "previous_questions": [
+        "What makes the indicator strip turn violet?"
+      ],
+      "passage": "In a demonstration tray, dye moves along two paper strips of equal length. A wax stripe interrupts the wet path on one strip until a drop bridges the gap. Both end tabs turn violet only after dye reaches them. A pale end tab by itself does not show whether dye has entered the strip."
+    },
+    "question": "Which source excerpt best explains why Both end tabs turn violet only after dye reaches them?",
+    "answer": "dye reaches them",
+    "ratings": {
+      "support": "fail",
+      "novelty": "fail",
+      "challenge": "fail"
+    },
+    "reason": "A repeats the question and tests the same fact as the prior question. It never asks why the strips differ in timing.",
+    "arm": "candidate"
+  },
+  {
+    "case": {
+      "id": "return-chute",
+      "level": "apply",
+      "goal": "Diagnose where a parcel will go after the operator releases the pedal.",
+      "previous_questions": [
+        "Which control moves the gate?"
+      ],
+      "passage": "A foot pedal moves a sorting gate toward the blue bin. A spring returns the gate toward the gray bin when pressure is removed. A parcel follows the gate position at the moment it reaches the fork. Releasing the pedal before the parcel reaches the fork changes its destination."
+    },
+    "question": "A learner claims: “Releasing the pedal stops the parcel from moving forward”. Which source excerpt best corrects their reasoning?",
+    "answer": "Releasing the pedal before the parcel reaches the fork changes its destination",
+    "ratings": {
+      "support": "pass",
+      "novelty": "pass",
+      "challenge": "fail"
+    },
+    "reason": "A corrects the claim, but I can pick it without working out which bin the parcel reaches.",
+    "arm": "baseline"
+  },
+  {
+    "case": {
+      "id": "return-chute",
+      "level": "apply",
+      "goal": "Diagnose where a parcel will go after the operator releases the pedal.",
+      "previous_questions": [
+        "Which control moves the gate?"
+      ],
+      "passage": "A foot pedal moves a sorting gate toward the blue bin. A spring returns the gate toward the gray bin when pressure is removed. A parcel follows the gate position at the moment it reaches the fork. Releasing the pedal before the parcel reaches the fork changes its destination."
+    },
+    "question": "A learner claims: “Releasing the pedal stops the parcel from moving forward”. Which source excerpt best corrects their reasoning?",
+    "answer": "Releasing the pedal before the parcel reaches the fork changes its destination",
+    "ratings": {
+      "support": "pass",
+      "novelty": "pass",
+      "challenge": "fail"
+    },
+    "reason": "A corrects the claim, but I can pick it without working out which bin the parcel reaches.",
+    "arm": "candidate"
+  },
+  {
+    "case": {
+      "id": "cooling-sleeves",
+      "level": "explain",
+      "goal": "Explain why the two metal cups cool at different rates.",
+      "previous_questions": [
+        "Which cup has a felt sleeve?"
+      ],
+      "passage": "Two metal cups hold equal amounts of warm water in the same room. One cup has a felt sleeve. Trapped air in the sleeve slows heat transfer to the room. The uncovered cup loses heat faster, so its water temperature falls sooner."
+    },
+    "question": "Which source excerpt best explains why The cup without a sleeve cools faster than the cup with a sleeve?",
+    "answer": "has a felt sleeve",
+    "ratings": {
+      "support": "fail",
+      "novelty": "fail",
+      "challenge": "fail"
+    },
+    "reason": "B repeats the sleeve fact from the prior question. I can pick it without explaining why the cups cool differently.",
+    "arm": "baseline"
+  },
+  {
+    "case": {
+      "id": "cooling-sleeves",
+      "level": "explain",
+      "goal": "Explain why the two metal cups cool at different rates.",
+      "previous_questions": [
+        "Which cup has a felt sleeve?"
+      ],
+      "passage": "Two metal cups hold equal amounts of warm water in the same room. One cup has a felt sleeve. Trapped air in the sleeve slows heat transfer to the room. The uncovered cup loses heat faster, so its water temperature falls sooner."
+    },
+    "question": "Which source excerpt best explains why The cup with the felt sleeve cools slower than the uncovered cup?",
+    "answer": "has a felt sleeve",
+    "ratings": {
+      "support": "fail",
+      "novelty": "fail",
+      "challenge": "fail"
+    },
+    "reason": "B repeats the sleeve fact from the prior question. I can pick it without explaining why the cups cool differently.",
+    "arm": "baseline"
+  },
+  {
+    "case": {
+      "id": "cooling-sleeves",
+      "level": "explain",
+      "goal": "Explain why the two metal cups cool at different rates.",
+      "previous_questions": [
+        "Which cup has a felt sleeve?"
+      ],
+      "passage": "Two metal cups hold equal amounts of warm water in the same room. One cup has a felt sleeve. Trapped air in the sleeve slows heat transfer to the room. The uncovered cup loses heat faster, so its water temperature falls sooner."
+    },
+    "question": "Which source excerpt best explains why The cup with the felt sleeve cools slower than the uncovered cup?",
+    "answer": "has a felt sleeve",
+    "ratings": {
+      "support": "fail",
+      "novelty": "fail",
+      "challenge": "fail"
+    },
+    "reason": "B repeats the sleeve fact from the prior question. I can pick it without explaining why the cups cool differently.",
+    "arm": "candidate"
+  },
+  {
+    "case": {
+      "id": "cooling-sleeves",
+      "level": "explain",
+      "goal": "Explain why the two metal cups cool at different rates.",
+      "previous_questions": [
+        "Which cup has a felt sleeve?"
+      ],
+      "passage": "Two metal cups hold equal amounts of warm water in the same room. One cup has a felt sleeve. Trapped air in the sleeve slows heat transfer to the room. The uncovered cup loses heat faster, so its water temperature falls sooner."
+    },
+    "question": "Which source excerpt best explains why The cup with the felt sleeve cools slower than the uncovered cup?",
+    "answer": "has a felt sleeve",
+    "ratings": {
+      "support": "fail",
+      "novelty": "fail",
+      "challenge": "fail"
+    },
+    "reason": "B repeats the sleeve fact from the prior question. I can pick it without explaining why the cups cool differently.",
+    "arm": "candidate"
+  }
+]

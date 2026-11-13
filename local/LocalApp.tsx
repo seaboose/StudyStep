@@ -1,4 +1,6 @@
-import { useLayoutEffect, useState } from "react";
+import SectionNavigation from "./SectionNavigation";
+import { downloadJson } from "../lib/download";
+import { useEffect, useLayoutEffect, useState } from "react";
 import {
   ArrowRight,
   BookOpen,
@@ -17,9 +19,10 @@ import StudyApp from "../app/study-app";
 import { SPECIES } from "../lib/focus";
 import { useFocus } from "./focus/useFocus";
 import LearningPattern from "./focus/Tree";
+import AgentWorkspace from "./AgentWorkspace";
 import "./focus/focus.css";
 
-type Page = "today" | "study" | "garden" | "journal";
+type Page = "today" | "study" | "garden" | "journal" | "agents";
 const minutes = (ms: number) => Math.floor(ms / 60000);
 const clock = (ms: number) => {
   const seconds = Math.max(0, Math.ceil(ms / 1000));
@@ -29,6 +32,15 @@ const dayKey = (time: number) => new Date(time).toLocaleDateString();
 
 export default function LocalApp() {
   const [page, setPage] = useState<Page>("study");
+  const [agentsEnabled, setAgentsEnabled] = useState(false);
+  useEffect(() => {
+    const controller = new AbortController();
+    void fetch("/api/features", { signal: controller.signal })
+      .then(async (response) => response.ok ? response.json() : { agents: false })
+      .then((features: { agents?: boolean }) => setAgentsEnabled(features.agents === true))
+      .catch(() => {});
+    return () => controller.abort();
+  }, []);
   useLayoutEffect(() => { window.scrollTo(0, 0); }, [page]);
   const [duration, setDuration] = useState(25),
     [task, setTask] = useState("");
@@ -51,6 +63,7 @@ export default function LocalApp() {
     : duration * 60000;
   const nav = [
     { id: "study", label: "Study", icon: BookOpen },
+    ...(agentsEnabled ? [{ id: "agents" as const, label: "Learning agents", icon: Sparkles }] : []),
     { id: "today", label: "Focus timer", icon: Timer },
     { id: "garden", label: "Focus collection", icon: Sparkles },
     { id: "journal", label: "Study journal", icon: History },
@@ -68,27 +81,7 @@ export default function LocalApp() {
   }
   function exportFocus() {
     if (!state) return;
-    const url = URL.createObjectURL(
-      new Blob(
-        [
-          JSON.stringify(
-            {
-              format: "studystep-focus-backup",
-              exportedAt: new Date().toISOString(),
-              state,
-            },
-            null,
-            2,
-          ),
-        ],
-        { type: "application/json" },
-      ),
-    );
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "studystep-focus-backup.json";
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    downloadJson({ format: "studystep-focus-backup", exportedAt: new Date().toISOString(), state }, "studystep-focus-backup.json");
   }
   return (
     <div className={`desktop-app ${state?.reducedMotion ? "still" : ""}`}>
@@ -105,18 +98,7 @@ export default function LocalApp() {
           </span>
           <span className="brand-copy"><strong>StudyStep</strong><small>A personal learning workspace</small></span>
         </button>
-        <nav aria-label="App navigation">
-          {nav.map((n) => (
-              <button
-                key={n.id}
-                aria-current={page === n.id ? "page" : undefined}
-                onClick={() => setPage(n.id)}
-              >
-                <n.icon size={17} />
-                {n.label}
-              </button>
-            ))}
-        </nav>
+        <SectionNavigation label="App navigation" sections={nav} current={page} onChange={setPage} />
         <span
           className="leaf-wallet focus-wallet"
           aria-label={`${state?.coins || 0} focus credits earned and available`}
@@ -163,7 +145,8 @@ export default function LocalApp() {
       <div hidden={page !== "study"} className="retained-study">
         <StudyApp local />
       </div>
-      {page !== "study" && (
+      {agentsEnabled && <main id={page === "agents" ? "desktop-main" : undefined} hidden={page !== "agents"} tabIndex={-1}><AgentWorkspace active={page === "agents"} onStudy={() => setPage("study")} /></main>}
+      {page !== "study" && page !== "agents" && (
         <main id="desktop-main" className="focus-main" tabIndex={-1}>
           {page === "today" && (
             <>
@@ -582,11 +565,9 @@ export default function LocalApp() {
                           <small> min</small>
                         </strong>
                         <div className="bar-track">
-                          <span
-                            style={{
-                              height: `${Math.min(100, (value / 120) * 100)}%`,
-                            }}
-                          />
+                          {value > 0 && (
+                            <span style={{ height: `${Math.min(100, (value / 120) * 100)}%` }} />
+                          )}
                         </div>
                         <span>
                           {date.toLocaleDateString(undefined, {

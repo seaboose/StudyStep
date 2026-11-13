@@ -1,3 +1,4 @@
+import { downloadJson } from "../lib/download";
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowRight,
@@ -111,23 +112,7 @@ export default function Flashcards({
     : null;
   function exportProgress() {
     if (!snapshot) return;
-    const url = URL.createObjectURL(
-      new Blob(
-        [
-          JSON.stringify(
-            { format: "studystep-review-export", version: 1, ...snapshot },
-            null,
-            2,
-          ),
-        ],
-        { type: "application/json" },
-      ),
-    );
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "studystep-flashcard-progress.json";
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    downloadJson({ format: "studystep-review-export", version: 1, ...snapshot }, "studystep-flashcard-progress.json");
   }
   return (
     <section className={`recall-space ${trail ? "trail-mode" : ""}`}>
@@ -257,7 +242,7 @@ export default function Flashcards({
                   <span>Untimed · saved as you review</span>
                 </div>
                 <p className="recall-topic">{card.topic}</p>
-                <h2>{card.front}</h2>
+                <h2 key={session.index}>{card.front}</h2>
                 {!session.revealed ? (
                   <>
                     <label htmlFor="recall-draft">

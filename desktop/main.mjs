@@ -17,9 +17,7 @@ const hiddenTest = process.env.STUDYSTEP_TEST_HIDDEN === "1";
 if (hiddenTest && !app.isReady()) app.disableHardwareAcceleration();
 const option = (name) =>
   process.argv.find((v) => v.startsWith(name + "="))?.slice(name.length + 1);
-const development = app.isPackaged
-  ? app.getName() === "StudyStep Dev"
-  : process.env.STUDYSTEP_CHANNEL === "development";
+const development = !app.isPackaged && process.env.STUDYSTEP_CHANNEL === "development";
 const appName = development ? "StudyStep Dev" : "StudyStep";
 app.setName(appName);
 app.setAppUserModelId(development ? "local.studystep.development" : "local.studystep.desktop");
@@ -73,12 +71,16 @@ if (!globalThis[Symbol.for("studystep.instance-lock")] && !app.requestSingleInst
               OLLAMA_MODELS: path.join(ollamaRoot, "models"),
               OLLAMA_NO_CLOUD: "1",
               OLLAMA_CONTEXT_LENGTH: "16384",
+              OLLAMA_FLASH_ATTENTION: "1",
+              OLLAMA_KV_CACHE_TYPE: "q8_0",
+              OLLAMA_NUM_PARALLEL: "1",
+              USERPROFILE: path.join(ollamaRoot, "profile"),
             },
           });
           runtime.on("error", () => {});
         }
       }
-      server = await createLocalServer({ dataDir, port: 0 });
+      server = await createLocalServer({ dataDir, port: 0, agentsEnabled: development });
       window = new BrowserWindow({
         width: 1260,
         height: 920,
@@ -87,7 +89,7 @@ if (!globalThis[Symbol.for("studystep.instance-lock")] && !app.requestSingleInst
         show: false,
         title: appName,
         icon: path.join(root, "desktop", development ? "icon-dev.ico" : "icon.ico"),
-        backgroundColor: "#080c12",
+        backgroundColor: "#e7ecf2",
         webPreferences: {
           nodeIntegration: false,
           contextIsolation: true,

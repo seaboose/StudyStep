@@ -185,10 +185,6 @@
   font-size: 23px;
   margin: 12px 0;
 }
-.local-status {
-  font-size: 12px;
-  color: #536b5e;
-}
 .local-dialog details summary {
   cursor: pointer;
 }

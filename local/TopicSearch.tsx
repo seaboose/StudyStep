@@ -1,3 +1,4 @@
+import { followRequest, frequencies } from "./FollowedSources";
 import { useRef, useState } from "react";
 import { Search, ArrowRight, Globe, Loader2 } from "lucide-react";
 import type { Source } from "../lib/study";
@@ -19,6 +20,7 @@ export default function TopicSearch({
     [source, setSource] = useState<Source | null>(null),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false);
+  const [cadence, setCadence] = useState("weekly");
   const requestId = useRef(0);
   async function request(path: string, body: unknown) {
     const response = await fetch(path, {
@@ -151,6 +153,41 @@ export default function TopicSearch({
           <a href={source.originUrl} target="_blank" rel="noreferrer">
             Read original article
           </a>
+          <div>
+            <label>
+              Check this source{" "}
+              <select
+                value={cadence}
+                onChange={(e) => setCadence(e.target.value)}
+              >
+                {frequencies}
+              </select>
+            </label>
+            <button
+              className="secondary"
+              disabled={busy || locked}
+              onClick={async () => {
+                setBusy(true);
+                setError("");
+                try {
+                  await followRequest({
+                    action: "follow",
+                    pageId: Number(
+                      new URL(source.originUrl!).searchParams.get("curid"),
+                    ),
+                    cadence,
+                  });
+                  window.dispatchEvent(new Event("topic-follow-changed"));
+                } catch (e) {
+                  setError((e as Error).message);
+                } finally {
+                  setBusy(false);
+                }
+              }}
+            >
+              Follow source
+            </button>
+          </div>
           <div className="topic-excerpt">
             {source.passages.map((p) => (
               <p key={p.id}>{p.text}</p>

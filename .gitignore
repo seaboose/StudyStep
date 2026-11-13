@@ -5,9 +5,14 @@ node_modules/
 desktop/staging/
 desktop/releases/
 desktop/latest-build.json
+desktop/latest-dev-build.json
+desktop/dev-app/
+desktop/dev-staging/
+Start StudyStep Dev.cmd
 Start StudyStep Desktop.cmd
 .env*
 *.log
 *.tsbuildinfo
 .pnpm-store/
 artifacts/
+launchers/
