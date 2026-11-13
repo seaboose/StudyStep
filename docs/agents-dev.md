@@ -1,10 +1,10 @@
-# Learning agents in StudyStep Dev 0.4
+# Developer learning agents
 
-Open **StudyStep Dev → Learning agents**. The installed StudyStep 0.3.2 product remains its separate snapshot and profile. The tested local model `qwen3.5:9b` is selected in Dev; the older 8B and 4B models remain installed. Model quality varies: source and answer checks can reject a draft, and the intended difficulty label is not a guarantee of genuinely harder reasoning.
+Run `pnpm dev` from a source checkout and open **Learning agents**. This mode uses a separate study profile. Experimental agent proposals can fail their checks and still require learner review.
 
 ## Use it
 
-1. Select an installed local model in the connection panel. The portable Ollama runtime starts with Dev; initial GPU/model startup can take time. Refresh the connection if needed.
+1. Select an installed local model in the connection panel. Start a local Ollama service or configure a local runtime. Initial model loading can take time. Refresh the connection if needed.
 2. Enter a **Topic** and **What do you want to understand?** Choose foundations, explanation, or application, and whether to use progress for recommendations.
 3. Choose **Find Wikipedia overviews** or **My selected study material**. Web research sends goal-derived search phrases to Wikipedia; generation and review run on the local model. This first research connector retrieves introductory extracts, not comprehensive web research. For specialist or deeper material, select your own source passages in Create a set.
 4. Assign the task. Researcher, Card author, Learning reviewer, and coordinator stages appear in Activity. You may keep studying, cancel, or retry a failed task. Each task is a single run; no recurring monitoring is installed.
