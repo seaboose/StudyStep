@@ -272,3 +272,90 @@ test("a source prefix ending inside a word cannot pass as an exact answer", () =
   assert.ok(qualityProblems(g).some((p) => p.includes("exact phrase")));
   assert.ok(qualityProblems(g).some((p) => p.includes("inside a source word")));
 });
+
+test("exact source phrases cannot end in dangling possessives or prepositions", () => {
+  const endings = [
+    "their",
+    "its",
+    "our",
+    "your",
+    "his",
+    "her",
+    "my",
+    "of",
+    "with",
+    "from",
+    "to",
+    "for",
+    "by",
+    "in",
+    "into",
+    "through",
+    "between",
+    "within",
+  ];
+  for (const ending of endings) {
+    const g = guide();
+    const answer = `the energy necessary to fuel ${ending}`;
+    const citation = { passageId: "p1", quote: `${answer} activities.` };
+    g.units[0].recallAnswer = answer;
+    g.units[0].citations = [citation];
+    g.questions[0].citations = [citation];
+    g.questions[0].options[g.questions[0].correctIndex].text = answer;
+    const problems = qualityProblems(g);
+    assert.ok(!problems.some((p) => p.includes("exact phrase")), ending);
+    assert.ok(
+      problems.some(
+        (p) => p.startsWith("Recall answer:") && p.includes("appears cut off"),
+      ),
+      ending,
+    );
+    assert.ok(
+      problems.some(
+        (p) => p.startsWith("Option ") && p.includes("appears cut off"),
+      ),
+      ending,
+    );
+  }
+  const g = guide();
+  const wrong = (g.questions[0].correctIndex + 1) % 3;
+  g.questions[0].options[wrong].text = "The source of.”  ";
+  assert.ok(
+    qualityProblems(g).some(
+      (p) =>
+        p.startsWith(`Option ${wrong + 1}:`) && p.includes("appears cut off"),
+    ),
+  );
+});
+
+test("complete answer phrases and preposition-ending questions are not treated as dangling answers", () => {
+  const answers = [
+    "the energy necessary to fuel their activities",
+    "movement through their cells",
+    "nutrients from soil",
+    "their growth",
+    "benefits",
+    "sunlight for photosynthesis",
+  ];
+  for (const answer of answers) {
+    const g = assembleDraft(
+      {
+        title: "Energy for",
+        topics: [
+          {
+            title: "The energy necessary for",
+            question: "What is this energy necessary for?",
+            answer,
+            distractors: ["Pebbles", "Clouds"],
+            citations: [{ evidenceId: "E1" }],
+          },
+        ],
+        gaps: [],
+      },
+      new Map([
+        ["E1", { passageId: "p1", quote: `The source describes ${answer}.` }],
+      ]),
+    );
+    assert.deepEqual(qualityProblems(g), [], answer);
+  }
+});

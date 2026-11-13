@@ -1,29 +1,20 @@
 # StudyStep
 
-A student project for turning notes into source-linked study practice. Built with
-TypeScript, React, Node.js, and Electron for Windows.
+StudyStep turns your own notes into source-linked study guides, flashcards and practice questions. Its Windows desktop app stores study progress locally.
 
-**[Download for Windows](https://github.com/seaboose/StudyStep/releases/download/v0.3.2/StudyStep-0.3.2-Windows-x64.zip)** · **[Code guide](docs/code-guide.md)**
+[Download the latest published Windows release](https://github.com/seaboose/StudyStep/releases/latest) · [Release notes for 0.4.0](docs/release-0.4.0.md)
 
-Extract the complete ZIP and open **StudyStep.exe**. Node.js is not required.
-The app is unsigned.
+Extract the whole ZIP, then open **StudyStep.exe**. The app is unsigned. Manual study works offline. Wikipedia features need internet. Optional AI drafting uses a separately installed local Ollama model.
 
-Import PDF, DOCX, TXT, or Markdown notes, then practice with cards, questions,
-scheduled review, and a focus timer. Manual study works without a model.
+## Learn with StudyStep
 
-Explore a topic with Wikipedia search, or bring your own material. Keep one
-active study workspace, practice its source-linked cards, and return to due
-reviews. Focus sessions earn credits for the focus collection; the study journal
-records time spent learning.
+- Import PDF, DOCX, Markdown or text, or start with a topic overview.
+- Review source-linked questions and flashcards. After practice, choose a suggested activity, inspect the evidence behind the recommendation, or correct your topic assessment.
+- Follow Wikipedia introductions at a daily, weekly or 30-day interval. Review changed wording while the app is open or when it next starts.
+- Discover related readings with a reason and a prerequisite. Accept them into your reading list or dismiss them for that study set.
+- Time a focus session, pause and resume it, and export the journal.
+- Inspect and approve optional local AI drafts before adding them. Generated content still needs learner judgment.
 
-Optional local AI uses [Ollama](https://ollama.com/download): draft → source checks
-→ model review → at most one revision → human review before saving.
-Models are not bundled, and generated answers can still be wrong.
+![StudyStep flashcard practice](docs/study-cards.png)
 
-![Practice with the included example set](docs/study-cards.png)
-
-[Build and test](docs/development.md) · [Security and data limits](SECURITY.md) ·
-[Release checklist](docs/release-checklist.md) · [MIT license](LICENSE) · [Dependency notices](THIRD_PARTY_NOTICES.txt)
-
-Version 0.3.2 documents the regular desktop product. See the
-[release provenance](docs/release-0.3.2.md) for the source recovery and validation.
+[Build and test](docs/development.md) · [Security](SECURITY.md) · [Dependency notices](THIRD_PARTY_NOTICES.txt)

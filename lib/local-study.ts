@@ -158,6 +158,9 @@ export function editGuide(data: Workspace, value: unknown): Workspace {
     generatedAt: new Date().toISOString(),
     attempts: data.attempts.filter((a) => unchangedQuestions.has(a.questionId)),
     hintUsed: data.hintUsed.filter((id) => unchangedQuestions.has(id)),
+    ...(data.topicAssessments && { topicAssessments: Object.fromEntries(
+      Object.entries(data.topicAssessments).filter(([id]) => unchangedUnits.has(id)),
+    ) }),
     studied: data.studied.filter((id) => unchangedUnits.has(id)),
     currentUnit: Math.min(data.currentUnit, guide.units.length - 1),
     currentQuestion: Math.min(

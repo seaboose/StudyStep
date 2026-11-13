@@ -1,3 +1,4 @@
+import { downloadJson } from "../lib/download";
 import { useEffect, useRef, useState } from "react";
 import type { Guide, Workspace } from "../lib/study";
 import {
@@ -85,16 +86,7 @@ export default function CardReview({
       close();
     });
   function exportDraft() {
-    const url = URL.createObjectURL(
-      new Blob([JSON.stringify({ guide: draft, reviewedIds }, null, 2)], {
-        type: "application/json",
-      }),
-    );
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "studystep-editor-draft.json";
-    link.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    downloadJson({ guide: draft, reviewedIds }, "studystep-editor-draft.json");
   }
   function patchUnit(patch: Partial<Guide["units"][number]>) {
     setDraft((d) => ({

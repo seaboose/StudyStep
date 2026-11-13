@@ -392,3 +392,54 @@ test("local adapter blocks cloud names, redirects, and incomplete outputs", asyn
     /ran out/,
   );
 });
+
+test("advanced local calls ground the schema, bound output and keep repeated decisions unbiased", async () => {
+  for (const [model, name, grounded] of [
+    ["qwen3.5:9b", "advanced_review", true],
+    ["qwen3.5:9b", "advanced_question", true],
+    ["qwen3:8b", "advanced_review", true],
+    ["qwen3.5:9b", "advanced_transfer", true],
+    ["other-local", "research_plan", false],
+  ]) {
+    const adapter = localResponseAdapter(
+      model,
+      new AbortController().signal,
+      async (_url, init) => {
+        const body = JSON.parse(init.body);
+        assert.equal(body.think, false);
+        assert.equal(body.options.num_predict, 4500);
+        assert.equal(body.options.repeat_penalty, 1);
+        assert.equal(body.options.presence_penalty, 0);
+        assert.equal(body.options.frequency_penalty, 0);
+        assert.equal(
+          body.messages[0].content.includes(JSON.stringify(body.format)),
+          grounded,
+        );
+        if (name === "advanced_transfer") {
+          assert.ok(
+            body.messages[0].content.includes("Do not write study content"),
+          );
+          assert.ok(
+            !body.messages[0].content.includes("Copy the answer phrase"),
+          );
+        }
+        return Response.json({
+          done: true,
+          done_reason: "stop",
+          message: { content: "{}", thinking: "private diagnostic" },
+        });
+      },
+    );
+    const result = await adapter("ignored", {
+      body: JSON.stringify({
+        instructions: "",
+        input: "",
+        text: { format: { name, schema: { type: "object", properties: {} } } },
+      }),
+    });
+    assert.equal(
+      JSON.stringify(await result.json()).includes("private diagnostic"),
+      false,
+    );
+  }
+});

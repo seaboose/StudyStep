@@ -19,8 +19,9 @@ const hash = async (value: unknown) =>
     (b) => b.toString(16).padStart(2, "0"),
   ).join("");
 export async function buildDeck(data: Workspace) {
+  const units = data.guide?.units || [];
   const raw: Omit<Card, "id">[] = [];
-  for (const u of data.guide?.units || [])
+  for (const u of units)
     raw.push({
       front: u.recallPrompt.trim() || `Explain: ${u.title}`,
       back: u.recallAnswer.trim() || u.explanation,
@@ -32,17 +33,35 @@ export async function buildDeck(data: Workspace) {
   // prompts such as "Which of the following…" meaningless as recall cards.
   const seen = new Set<string>();
   const cards: Card[] = [];
-  for (const c of raw) {
+  const cardSignatures: Record<string, string> = {};
+  for (const [index, c] of raw.entries()) {
     const key = c.front.toLowerCase().replace(/\s+/g, " ").trim();
     if (seen.has(key) || !c.back.trim()) continue;
     seen.add(key);
-    cards.push({ ...c, id: await hash(c) });
+    const card = { ...c, id: await hash(c) };
+    cards.push(card);
+    const passageIds = new Set(
+      c.citations.map((citation) => citation.passageId),
+    );
+    // Keep the established card/deck IDs. A separate signature binds carryover
+    // to the original unit, related quiz, and cited source contents/provenance.
+    // An uncited manual card is bound to its unit, not to unrelated new sources.
+    cardSignatures[card.id] = await hash({
+      unit: units[index],
+      questions: (data.guide?.questions || []).filter(
+        (question) => question.unitId === units[index].id,
+      ),
+      sources: data.sources.filter((source) =>
+        source.passages.some((passage) => passageIds.has(passage.id)),
+      ),
+    });
   }
   // Source edits invalidate old scheduling as well as changes to card wording.
   return {
     id: await hash({ cards, sources: data.sources }),
     title: data.guide?.title || "Your study set",
     cards,
+    cardSignatures,
   };
 }
 const stamp = z.number().int().nonnegative();
@@ -76,6 +95,8 @@ const deckState = z
     progress: z.record(key, progress),
     session: session.nullable(),
     trails: z.number().int().nonnegative(),
+    // Optional so existing version-1 progress files remain readable.
+    cardSignatures: z.record(key, key).optional(),
   })
   .strict();
 export const reviewSchema = z
@@ -90,6 +111,78 @@ export const emptyDeck = (): DeckState => ({
   session: null,
   trails: 0,
 });
+
+function usableSession(value: DeckState["session"], unchanged: Set<string>) {
+  return value &&
+    value.queue.every((item) => unchanged.has(item.cardId)) &&
+    value.rated.every((id) => unchanged.has(id)) &&
+    value.missed.every((id) => unchanged.has(id))
+    ? structuredClone(value)
+    : null;
+}
+
+// Never search other archived decks by similar text. Both snapshots must come
+// from one explicit, revision-checked workspace transition.
+export function carryReview(
+  before: Deck,
+  after: Deck,
+  previous: DeckState,
+  target?: DeckState,
+): DeckState {
+  const unchanged = new Set(
+    before.cards
+      .filter(
+        (card) =>
+          before.cardSignatures[card.id] === after.cardSignatures[card.id] &&
+          (!previous.cardSignatures ||
+            previous.cardSignatures[card.id] ===
+              before.cardSignatures[card.id]),
+      )
+      .map((card) => card.id),
+  );
+  const targetValid = new Set(
+    after.cards
+      .filter(
+        (card) =>
+          target?.cardSignatures?.[card.id] === after.cardSignatures[card.id],
+      )
+      .map((card) => card.id),
+  );
+  const result = emptyDeck();
+  for (const card of after.cards) {
+    const old = unchanged.has(card.id) ? previous.progress[card.id] : undefined;
+    const existing = targetValid.has(card.id)
+      ? target?.progress[card.id]
+      : undefined;
+    const latest = !old
+      ? existing
+      : !existing
+        ? old
+        : existing.last > old.last ||
+            (existing.last === old.last && existing.reviews > old.reviews)
+          ? existing
+          : old;
+    if (latest) result.progress[card.id] = structuredClone(latest);
+  }
+  const activity = (state: DeckState | undefined) =>
+    Math.max(
+      0,
+      ...Object.values(state?.progress || {}).map((item) => item.last),
+    );
+  const priorSession = usableSession(previous.session, unchanged);
+  const targetSession = usableSession(target?.session || null, targetValid);
+  result.session =
+    targetSession && activity(target) > activity(previous)
+      ? targetSession
+      : priorSession || targetSession;
+  // A cumulative round count cannot be reliably apportioned to edited cards.
+  result.trails = Math.max(
+    unchanged.size === before.cards.length ? previous.trails : 0,
+    target && targetValid.size === after.cards.length ? target.trails : 0,
+  );
+  result.cardSignatures = after.cardSignatures;
+  return result;
+}
 export const reviewCommand = z.discriminatedUnion("type", [
   z
     .object({

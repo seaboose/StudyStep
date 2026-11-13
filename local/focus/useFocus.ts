@@ -5,7 +5,7 @@ export function useFocus() {
   const [state, setState] = useState<FocusState | null>(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
-  const [tick, setTick] = useState(0);
+  const [, setTick] = useState(0);
   const received = useRef(0),
     lock = useRef(false),
     mounted = useRef(true);
@@ -55,13 +55,17 @@ export function useFocus() {
     mounted.current = true;
     void request();
     const poll = setInterval(() => void request(), 4000);
-    const timer = setInterval(() => setTick((n) => n + 1), 1000);
     return () => {
       mounted.current = false;
       clearInterval(poll);
-      clearInterval(timer);
     };
   }, [request]);
+  const running = state?.active?.status === "running";
+  useEffect(() => {
+    if (!running) return;
+    const timer = setInterval(() => setTick((n) => n + 1), 1000);
+    return () => clearInterval(timer);
+  }, [running]);
   const elapsed = state?.active
     ? Math.min(
         state.active.targetMinutes * 60000,
@@ -75,7 +79,6 @@ export function useFocus() {
     state,
     error,
     busy,
-    tick,
     elapsed,
     command: request,
     reload: () => request(),

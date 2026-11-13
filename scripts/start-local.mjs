@@ -32,6 +32,10 @@ if (process.platform === "win32" && existsSync(binary)) {
         OLLAMA_MODELS: path.join(root, ".runtime/ollama/models"),
         OLLAMA_NO_CLOUD: "1",
         OLLAMA_CONTEXT_LENGTH: "16384",
+        OLLAMA_FLASH_ATTENTION: "1",
+        OLLAMA_KV_CACHE_TYPE: "q8_0",
+        OLLAMA_NUM_PARALLEL: "1",
+        USERPROFILE: path.join(root, ".runtime/ollama/profile"),
       },
     });
     runtime.on("error", () =>

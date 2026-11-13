@@ -118,6 +118,14 @@ try {
     await readFile(path.join(data, "focus.json"), "utf8"),
   );
   assert.equal(focus.active.status, "paused");
+  await page.getByRole("button", { name: "Focus timer", exact: true }).click();
+  await page.getByRole("button", { name: "Finish session", exact: true }).click();
+  await page.getByRole("button", { name: "Save this session", exact: true }).click();
+  await page.getByRole("button", { name: "Study journal", exact: true }).click();
+  await page.getByText(/Finished early/).waitFor();
+  const download = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Export focus history" }).click();
+  assert.ok((await download).suggestedFilename());
   assert.deepEqual(errors, []);
   console.log(
     "Desktop checks passed: sandbox, import, reveal/rating, focus pause, and restart persistence.",

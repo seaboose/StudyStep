@@ -112,6 +112,11 @@ export const workspaceSchema = z
     currentUnit: z.number().int().min(0).max(5),
     currentQuestion: z.number().int().min(0).max(11),
     studied: z.array(short).max(6),
+    relatedTopics: z.array(z.object({
+      pageId: z.number().int().positive(), title: short, reason: z.string().max(2400),
+      prerequisite: z.string().max(2000), status: z.enum(["accepted", "dismissed"]),
+    }).strict()).max(500).optional(),
+    topicAssessments: z.record(short, z.enum(["practice", "confident"])).optional(),
     hintUsed: z.array(short).max(12).default([]),
     selectedPassageIds: z
       .array(z.string().max(300))

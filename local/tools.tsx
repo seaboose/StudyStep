@@ -1,3 +1,4 @@
+import { downloadJson } from "../lib/download";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
   Plus,
@@ -58,16 +59,6 @@ function Dialog({
       {children}
     </dialog>
   );
-}
-function downloadJson(value: unknown, name: string) {
-  const url = URL.createObjectURL(
-    new Blob([JSON.stringify(value, null, 2)], { type: "application/json" }),
-  );
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = name;
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 function Field({
   label,

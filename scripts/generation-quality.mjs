@@ -34,6 +34,18 @@ export function qualityProblems(guide) {
     )
       problems.push(`${label}: write a short complete sentence.`);
   }
+  function checkAnswer(label, text) {
+    // An exact source substring can still stop before a required complement.
+    // Scope this check to answers; questions commonly end in a preposition.
+    if (
+      /(?<![\p{L}\p{N}])(?:their|its|our|your|his|her|my|of|with|from|to|for|by|in|into|onto|at|through|toward|towards|between|among|within|without|under|over|about|against|during|upon|per)[\s.!?,;:…"'”’)}\]]*$/iu.test(
+        text,
+      )
+    )
+      problems.push(
+        `${label}: the answer appears cut off after a possessive or preposition. Use a complete source phrase with its required ending.`,
+      );
+  }
   for (const u of guide.units) {
     check(u.title + " explanation", u.explanation, 600);
     check(u.title + " detail", u.detail, 600);
@@ -46,6 +58,7 @@ export function qualityProblems(guide) {
       );
     check("Recall question", u.recallPrompt, 240, true);
     check("Recall answer", u.recallAnswer, 300);
+    checkAnswer("Recall answer", u.recallAnswer);
     u.keyPoints.forEach((p) => check("Key point", p, 180));
     if (!supportedText(u.recallAnswer, u.citations))
       problems.push(
@@ -61,6 +74,7 @@ export function qualityProblems(guide) {
     check("Hint", q.hint, 160);
     q.options.forEach((o, i) => {
       check(`Option ${i + 1}`, o.text, 160);
+      checkAnswer(`Option ${i + 1}`, o.text);
       check(`Option ${i + 1} explanation`, o.explanation, 180, true);
     });
     if (
@@ -171,7 +185,13 @@ export function reviewRequestSchema(items) {
         required: Object.keys(options),
         additionalProperties: false,
       };
-      result.properties.supportingQuote = { type: "string", maxLength: 600 };
+      // Select an existing source excerpt instead of asking the reviewer to retype it.
+      // Answer agreement and semantic support still pass through validateReview.
+      result.properties.supportingQuote = {
+        type: "string",
+        enum: [...new Set(i.evidence)],
+        maxLength: 600,
+      };
       result.required.push("optionChecks", "supportingQuote");
     }
     return result;
