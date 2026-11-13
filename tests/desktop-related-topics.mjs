@@ -3,7 +3,9 @@ import { mkdtemp, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { _electron } from "playwright";
-const executable = process.env.STUDYSTEP_TEST_EXE || JSON.parse(await readFile("desktop/latest-build.json")).executable;
+const executable =
+  process.env.STUDYSTEP_TEST_EXE ||
+  JSON.parse(await readFile("desktop/latest-build.json")).executable;
 const dir = await mkdtemp(path.join(tmpdir(), "studystep-discovery-"));
 const launch = () =>
   _electron.launch({
@@ -11,9 +13,31 @@ const launch = () =>
     args: [`--study-data=${dir}`],
     env: { ...process.env, STUDYSTEP_TEST_HIDDEN: "1" },
   });
+async function installSearchFixture(page) {
+  if (process.env.STUDYSTEP_SEARCH_FIXTURE !== "1") return;
+  await page.route("**/api/topics", (route) =>
+    route.fulfill({
+      json: {
+        results: [
+          {
+            pageId: 1,
+            title: "DNS resolver",
+            description: "A resolver obtains IP addresses for domain names.",
+          },
+          {
+            pageId: 2,
+            title: "DNS caching",
+            description: "Cached DNS responses speed up name resolution.",
+          },
+        ],
+      },
+    }),
+  );
+}
 let app = await launch();
 try {
   let page = await app.firstWindow();
+  await installSearchFixture(page);
   const button = (name) => page.getByRole("button", { name, exact: true });
   await page
     .getByText("Study-set tools · local AI, editing & backups", { exact: true })
@@ -55,6 +79,7 @@ try {
   await app.close();
   app = await launch();
   page = await app.firstWindow();
+  await installSearchFixture(page);
   await button("Create a set").click();
   await region().getByText(accepted, { exact: true }).waitFor();
   await button("Suggest related topics").click();
@@ -62,7 +87,7 @@ try {
   assert.equal(await cards().getByText(accepted, { exact: true }).count(), 0);
   assert.equal(await region().getByText(dismissed, { exact: true }).count(), 0);
   console.log(
-    "Packaged discovery passed: live suggestions, relevance, prerequisite, accept, dismiss and restart.",
+    "Packaged discovery passed: suggestions, relevance, prerequisite, accept, dismiss and restart.",
   );
 } finally {
   await app.close();

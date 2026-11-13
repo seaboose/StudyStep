@@ -2,6 +2,10 @@
 
 The [first runnable Dev slice](agents-dev.md) now implements topic/goal tasks, scoped research, reviewed proposals, exact acceptance, preserved progress, and next-step generation using the existing Node service. The remaining roadmap, including FastAPI/Pydantic/LangGraph, is mapped in the [full agent workflow](agent-workflow.md). All fifteen projects are not yet complete.
 
+## Milestone 5 release evidence
+
+The 0.4.0 release checks exercise the learner flows and keep developer replays separate. Read the measured notes on [practice history](reliability-history.md), [read-only shadow review](reliability-shadow.md), and [isolated repairs](reliability-maintenance.md). Optional code exercises and portal automation remain future product decisions.
+
 ## Product direction
 
 StudyStep lets a user task agents with learning goals in any subject. Agents research the chosen topic, keep relevant material current, create reviewed study activities, and propose progressively harder material from evidence of the user's understanding. The user can inspect and correct the learning profile, choose a different challenge level, and pause or stop a task.
